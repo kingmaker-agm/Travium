@@ -77,7 +77,8 @@ class WebService
     }
     public static function getRealDomain()
     {
-        return preg_replace("/^(.*\.)?([^.]*\..*)$/", "$2", self::getIndexUrl());
+        $host = parse_url(self::getIndexUrl(), PHP_URL_HOST) ?? '';
+        return preg_replace('/^www\./i', '', $host);
     }
     public static function getIndexUrl()
     {
@@ -91,8 +92,7 @@ class WebService
     }
     public static function getJustDomain()
     {
-        return str_replace([
-            "http://", '/',
-        ], '', preg_replace("/^(.*\.)?([^.]*\..*)$/", "$2", self::getIndexUrl()));
+        $host = parse_url(self::getIndexUrl(), PHP_URL_HOST) ?? '';
+        return preg_replace('/^www\./i', '', $host);
     }
 }
