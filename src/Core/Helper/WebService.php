@@ -97,7 +97,7 @@ class WebService
     public static function getRealDomain()
     {
         $host = parse_url(self::getIndexUrl(), PHP_URL_HOST) ?? '';
-        return preg_replace('/^www\./i', '', $host);
+        return preg_replace('/^www\./i', '', $host) . '/';
     }
 
     public static function getIndexUrl()
@@ -122,7 +122,7 @@ class WebService
     public static function getJustDomain()
     {
         $host = parse_url(self::getIndexUrl(), PHP_URL_HOST) ?? '';
-        return preg_replace('/^www\./i', '', $host);
+        return preg_replace('/^www\./i', '', $host) . '/';
     }
 
     public static function getJustSubDomain()
