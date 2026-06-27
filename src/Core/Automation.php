@@ -571,7 +571,10 @@ class Automation
         if (!$stmt['serverFinished']) {
             $wwLevel = floor(max(time() - $config->timers->WWConstructStartTime, 0) / $config->timers->WWUpLvlInterval);
             if ($wwLevel > 0) {
-                $db->query("UPDATE fdata SET f99=IF($wwLevel>100, 100, $wwLevel) WHERE kid=" . Formulas::xy2kid(0, 0));
+                $natarsWWKid = $db->fetchScalar("SELECT kid FROM vdata WHERE isWW=1 AND owner<=2 LIMIT 1");
+                if ($natarsWWKid) {
+                    $db->query("UPDATE fdata SET f99=IF($wwLevel>100, 100, $wwLevel) WHERE kid=$natarsWWKid");
+                }
             }
             if ($wwLevel >= 100) {
                 (new AutomationModel())->finishTheGame(2);
