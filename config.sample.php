@@ -53,6 +53,12 @@ $globalConfig['mailer'] = [
 // Installer key
 $globalConfig['installer_key'] = 'INIT_INSTALLER_SECRET_KEY';
 
+// Allowed CORS origins (list every domain your frontend runs on)
+$globalConfig['allowed_origins'] = [
+    // 'https://www.yourdomain.com',
+    // 'https://play.yourdomain.com',
+];
+
 /* Optional configurations */
 
 // Locale and formatting

@@ -1,5 +1,19 @@
 <?php
 use Core\Translator;
+function apply_cors_headers() {
+    global $globalConfig;
+    $allowedOrigins = $globalConfig['allowed_origins'] ?? [];
+    $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (!empty($allowedOrigins) && in_array($requestOrigin, $allowedOrigins)) {
+        header("Access-Control-Allow-Origin: $requestOrigin");
+        header("Access-Control-Allow-Credentials: true");
+        header("Vary: Origin");
+    } else {
+        header("Access-Control-Allow-Origin: *");
+    }
+    header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding');
+}
 function T($name){
     return Translator::translate($name);
 }
