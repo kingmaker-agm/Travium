@@ -93,7 +93,7 @@ class AcademyCtrl extends AnyCtrl
         $helper = new GoldHelper();
         foreach($this->researches['available'] as $nr) {
             --$size;
-            $unitId = nrToUnitId($nr, Session::getInstance()->getRace());
+            $unitId = nrToUnitId($nr, Village::getInstance()->getRace());
             $costs = Formulas::uResearchCost($unitId);
             $duration = Formulas::uResearchTime($unitId);
             $npc = '';
@@ -123,10 +123,10 @@ class AcademyCtrl extends AnyCtrl
         $size = sizeof($this->researches['soon']);
         foreach($this->researches['soon'] as $nr) {
             --$size;
-            $unitId = nrToUnitId($nr, Session::getInstance()->getRace());
+            $unitId = nrToUnitId($nr, Village::getInstance()->getRace());
             $costs = Formulas::uResearchCost($unitId);
             $duration = Formulas::uResearchTime($unitId);
-            $breq = Formulas::uResearchPreRequests(Session::getInstance()->getRace(), $nr);
+            $breq = Formulas::uResearchPreRequests(Village::getInstance()->getRace(), $nr);
             $requirements = '';
             $size2 = sizeof($breq);
             foreach($breq as $bid => $level) {
@@ -153,7 +153,7 @@ class AcademyCtrl extends AnyCtrl
         $researches = $this->researching;
         $this->view->vars['researchingTableBody'] = '';
         foreach($researches as $row) {
-            $u = nrToUnitId($row['nr'], Session::getInstance()->getRace());
+            $u = nrToUnitId($row['nr'], Village::getInstance()->getRace());
             $this->view->vars['researchingTableBody'] .= '<tr>';
             $this->view->vars['researchingTableBody'] .= '<td class="desc"><img class="unit u' . $u . '" src="img/x.gif" alt="' . T("Troops", "{$u}.title") . '" title="' . T("Troops", "{$u}.title") . '">' . T("Troops", "{$u}.title") . '</td>';
             $this->view->vars['researchingTableBody'] .= '<td class="dur">' . appendTimer($row['end_time'] - time()) . '</td>';
@@ -172,7 +172,7 @@ class AcademyCtrl extends AnyCtrl
             if($this->isResearching($u)) {
                 continue;
             }
-            $breq = Formulas::uResearchPreRequests(Session::getInstance()->getRace(), $u);
+            $breq = Formulas::uResearchPreRequests(Village::getInstance()->getRace(), $u);
             $researches[$this->_canDoResearch($breq) ? "available" : "soon"][$u] = $u;
         }
         $this->view->vars['availableSize'] = sizeof($researches['available']);

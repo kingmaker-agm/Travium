@@ -78,6 +78,7 @@ class Village
     private $isSupport = false;
     private $db;
     private $session;
+    private $race;
 
     public function __construct($session = null)
     {
@@ -310,6 +311,15 @@ class Village
     public function getKid()
     {
         return $this->get("kid") == '' ? 0 : $this->get("kid");
+    }
+
+    public function getRace()
+    {
+        if ($this->race === null) {
+            $r = $this->db->fetchScalar("SELECT race FROM units WHERE kid=?", (int)$this->getKid());
+            $this->race = $r !== false ? (int)$r : (int)$this->session->getRace();
+        }
+        return $this->race;
     }
 
     public function get($name)

@@ -45,7 +45,7 @@ class SmithyCtrl extends AnyCtrl
                     (($this->smithy[$nr] + $this->getResearchLevel($nr)) < 20) &&
                     (($this->smithy[$nr] + $this->getResearchLevel($nr) + 1) <= $this->building_lvl)
                 ) {
-                    $unitId = nrToUnitId($nr, Session::getInstance()->getRace());
+                    $unitId = nrToUnitId($nr, Village::getInstance()->getRace());
                     $costs = Formulas::uUpgradeCost($unitId, $this->smithy[$nr] + $this->getResearchLevel($nr) + 1);
                     $duration = Formulas::uUpgradeTime($unitId, $this->smithy[$nr] + $this->getResearchLevel($nr) + 1, $this->building_lvl);
                     $db = DB::getInstance();
@@ -95,7 +95,7 @@ class SmithyCtrl extends AnyCtrl
         $this->view->vars['researchingTableBody'] = '';
         while ($row = $researches->fetch_assoc()) {
             $this->researches[] = $row;
-            $u = nrToUnitId($row['nr'], Session::getInstance()->getRace());
+            $u = nrToUnitId($row['nr'], Village::getInstance()->getRace());
             $this->view->vars['researchingTableBody'] .= '<tr>';
             $this->view->vars['researchingTableBody'] .= '<td class="desc"><img class="unit u' . $u . '" src="img/x.gif" alt="' . T("Troops", "{$u}.title") . '" title="' . T("Troops", "{$u}.title") . '">' . T("Troops", "{$u}.title") . ' <span class="level">' . T("Buildings", "level") . ' ' . ($this->smithy[$row['nr']] + $this->getResearchLevel($row['nr']) + 1) . '</span></td>';
             $this->view->vars['researchingTableBody'] .= '<td class="dur">' . appendTimer($row['end_time'] - time()) . '</td>';
@@ -114,7 +114,7 @@ class SmithyCtrl extends AnyCtrl
         $size = sizeof($this->smithy);
         foreach ($this->smithy as $nr => $cur_lvl) {
             --$size;
-            $unitId = nrToUnitId($nr, Session::getInstance()->getRace());
+            $unitId = nrToUnitId($nr, Village::getInstance()->getRace());
             $lvl = $cur_lvl + $this->getResearchLevel($nr);
             $costs = Formulas::uUpgradeCost($unitId, $lvl + 1);
             $duration = Formulas::uUpgradeTime($unitId, $lvl + 1, $this->building_lvl);

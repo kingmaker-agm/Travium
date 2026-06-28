@@ -41,7 +41,7 @@ class TroopBuilding extends AnyCtrl
         $this->view = new PHPBatchView("build/TroopBuildingLayout");
         $this->building_id = Village::getInstance()->getField($index)['item_id'];
         $this->building_level = Village::getInstance()->getField($index)['level'];
-        $this->village_race = (int) DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid=" . Village::getInstance()->getKid()) ?: $session->getRace();
+        $this->village_race = Village::getInstance()->getRace();
         $this->art_eff = ArtefactsModel::getArtifactEffectByType(Session::getInstance()->getPlayerId(), Village::getInstance()->getKid(), ArtefactsModel::ARTIFACT_INCREASE_TRAINING_SPEED);
         $m = new TrainingModel();
         if (!in_array($this->building_id, [25, 26, 44, 36]) && $this->session->hero->getHeroHealth() > 0) {

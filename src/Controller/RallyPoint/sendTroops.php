@@ -403,7 +403,7 @@ class sendTroops extends RallyPointHTML
             $isOasis = $this->isOasis($this->result['settings']['to']['kid']);
             $isOasisOccupied = $isOasis ? $this->isOasisOccupied($this->result['settings']['to']['kid']) : false;
             //process spy :>
-            $sportCount = $this->result['settings']['units'][Formulas::getSpyId($session->getRace())];
+            $sportCount = $this->result['settings']['units'][Formulas::getSpyId(Village::getInstance()->getRace())];
             $nonSportCount = array_sum($this->result['settings']['units']) - $sportCount;
             if ($this->result['settings']['attack_type'] != 2 && $sportCount > 0 && $nonSportCount <= 0) {
                 $this->result['settings']['attack_type'] = 1;
@@ -421,7 +421,7 @@ class sendTroops extends RallyPointHTML
         }
         $units = [];
         for ($i = 1; $i <= 11; $i++) {
-            $units[nrToUnitId($i, $session->getRace())] = $this->result['settings']['units'][$i];
+            $units[nrToUnitId($i, Village::getInstance()->getRace())] = $this->result['settings']['units'][$i];
         }
         $row = [
             "owner" => [
@@ -491,8 +491,8 @@ class sendTroops extends RallyPointHTML
         $units_id = [];
         for ($i = 1; $i <= 10; $i++) {
             if ($this->result['settings']['units'][$i] > 0) {
-                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $session->getRace()));
-                $units_id[] = nrToUnitId($i, $session->getRace());
+                $speeds[] = Formulas::uSpeed(nrToUnitId($i, Village::getInstance()->getRace()));
+                $units_id[] = nrToUnitId($i, Village::getInstance()->getRace());
             }
         }
         $calculator = new SpeedCalculator();

@@ -98,10 +98,10 @@ $helper = new Game\GoldHelper();
     $units = $db->query("SELECT * FROM units WHERE kid=" . Village::getInstance()->getKid())->fetch_assoc();
     $inVillage = 0;
     for ($i = 1; $i <= 11; ++$i) {
-        $inVillage += $units['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Session::getInstance()->getRace()), 0);
-        if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+        $inVillage += $units['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Village::getInstance()->getRace()), 0);
+        if (Formulas::checkHDPEffect(nrToUnitId($i, Village::getInstance()->getRace()), $hdp)) {
             $totalOwnHDP += $units['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                    Session::getInstance()->getRace()),
+                    Village::getInstance()->getRace()),
                     $hdp);
         }
     }
@@ -109,10 +109,10 @@ $helper = new Game\GoldHelper();
     $enforcement = 0;
     while ($row = $enf->fetch_assoc()) {
         for ($i = 1; $i <= 11; ++$i) {
-            $enforcement += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Session::getInstance()->getRace()), 0);
-            if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+            $enforcement += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Village::getInstance()->getRace()), 0);
+            if (Formulas::checkHDPEffect(nrToUnitId($i, Village::getInstance()->getRace()), $hdp)) {
                 $totalOwnHDP += $row['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                        Session::getInstance()->getRace()),
+                        Village::getInstance()->getRace()),
                         $hdp);
             }
         }
@@ -121,10 +121,10 @@ $helper = new Game\GoldHelper();
     $trapped = $db->query("SELECT * FROM trapped WHERE kid=" . Session::getInstance()->getKid());
     while ($row = $trapped->fetch_assoc()) {
         for ($i = 1; $i <= 11; ++$i) {
-            $imprisoned += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Session::getInstance()->getRace()), 0);
-            if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+            $imprisoned += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Village::getInstance()->getRace()), 0);
+            if (Formulas::checkHDPEffect(nrToUnitId($i, Village::getInstance()->getRace()), $hdp)) {
                 $totalOwnHDP += $row['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                        Session::getInstance()->getRace()),
+                        Village::getInstance()->getRace()),
                         $hdp);
             }
         }
@@ -134,10 +134,10 @@ $helper = new Game\GoldHelper();
     $trapped = $db->query("SELECT * FROM movement WHERE ((kid=$kid AND mode=0) OR (to_kid=$kid AND mode=1))");
     while ($row = $trapped->fetch_assoc()) {
         for ($i = 1; $i <= 11; ++$i) {
-            $onTheWay += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Session::getInstance()->getRace()), 0);
-            if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+            $onTheWay += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, Village::getInstance()->getRace()), 0);
+            if (Formulas::checkHDPEffect(nrToUnitId($i, Village::getInstance()->getRace()), $hdp)) {
                 $totalOwnHDP += $row['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                        Session::getInstance()->getRace()),
+                        Village::getInstance()->getRace()),
                         $hdp);
             }
         }
@@ -218,7 +218,7 @@ $helper = new Game\GoldHelper();
                                         <td class="numberCell"><?= number_format_x($total - ($total * $wwEffect)); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if (Session::getInstance()->getRace() == 1): ?>
+                                <?php if (Village::getInstance()->getRace() == 1): ?>
                                     <tr class=" <?= $totalOwnHDP >= 1 ? '' : 'inactive'; ?>">
                                         <td class="troopLabel"><?= T("productionOverview", "HDP"); ?></td>
                                         <td class="numberCell"><?= number_format_x($totalOwnHDP); ?></td>

@@ -149,7 +149,7 @@ class Map_blockCtrl extends AnyCtrl
         if(!is_numeric($village['owner'])){
             return;
         }
-        $tribeId = $db->fetchScalar("SELECT race FROM users WHERE id={$village['owner']}");
+        $tribeId = $db->fetchScalar("SELECT race FROM units WHERE kid=$kid");
         if ($village['pop'] <= 100) {
             $index = 0;
         } else if ($village['pop'] <= 249) {
