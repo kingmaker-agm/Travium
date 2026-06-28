@@ -17,6 +17,7 @@ use Model\AutomationModel;
 use Model\BattleModel;
 use Model\MovementsModel;
 use Model\NatarsModel;
+use Model\InfoBoxModel;
 use Model\RegisterModel;
 use Model\SummaryModel;
 use function serialize;
@@ -60,6 +61,11 @@ class SettlersProcessor
         }
         $register = new RegisterModel();
         $register->createNewVillage($owner, $race, $row['to_kid'], $row['kid']);
+
+        if ($total_villages >= 1) {
+            $db->query("UPDATE users SET protection=" . time() . " WHERE id=$owner");
+            (new InfoBoxModel())->deleteInfoByType($owner, 6);
+        }
 
         (new SummaryModel())->setFirstVillageUser($name);
 

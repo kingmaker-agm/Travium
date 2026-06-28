@@ -854,7 +854,7 @@ class sendTroops extends RallyPointHTML
                 return FALSE;
             }
         } else if ($this->hasBeginnerProtection($village->getKid()) && $owner != $session->getPlayerId()) {
-            if (!$skippedProtection) {
+            if (!$skippedProtection && $attack_type == MovementsModel::ATTACKTYPE_NORMAL) {
                 $db->query("UPDATE users SET protection=" . time() . " WHERE id={$session->getPlayerId()}");
                 (new InfoBoxModel())->deleteInfoByType($session->getPlayerId(), 6);
             }
