@@ -32,6 +32,7 @@ class TroopBuilding extends AnyCtrl
     private $art_eff = 1;
     private $units = [];
     private $alliance_bonus = 1;
+    private $village_race = 1;
 
     public function __construct($index)
     {
@@ -40,6 +41,7 @@ class TroopBuilding extends AnyCtrl
         $this->view = new PHPBatchView("build/TroopBuildingLayout");
         $this->building_id = Village::getInstance()->getField($index)['item_id'];
         $this->building_level = Village::getInstance()->getField($index)['level'];
+        $this->village_race = (int) DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid=" . Village::getInstance()->getKid()) ?: $session->getRace();
         $this->art_eff = ArtefactsModel::getArtifactEffectByType(Session::getInstance()->getPlayerId(), Village::getInstance()->getKid(), ArtefactsModel::ARTIFACT_INCREASE_TRAINING_SPEED);
         $m = new TrainingModel();
         if (!in_array($this->building_id, [25, 26, 44, 36]) && $this->session->hero->getHeroHealth() > 0) {
@@ -116,7 +118,7 @@ class TroopBuilding extends AnyCtrl
                     $_f = FALSE;
                     $nextTroopTime = $troopTime;
                 }
-                $unitId = nrToUnitId($train['nr'], Session::getInstance()->getRace());
+                $unitId = nrToUnitId($train['nr'], $this->village_race);
                 if ($train['end_time'] >= TimezoneHelper::real_strtotime("tomorrow 00:00")) {
                     $end = TimezoneHelper::autoDateString($train['end_time'], TRUE);
                 } else {
@@ -175,7 +177,7 @@ class TroopBuilding extends AnyCtrl
                     if ($this->building_id == 19 && $num >= 2) {
                         $quest->setQuestBitwise('battle', 5, 1);
                     }
-                    $cost = Formulas::uTrainingCost(nrToUnitId($u, Session::getInstance()->getRace()), $great);
+                    $cost = Formulas::uTrainingCost(nrToUnitId($u, $this->village_race), $great);
                     foreach ($cost as &$v) {
                         $v *= $num;
                     }
@@ -187,7 +189,7 @@ class TroopBuilding extends AnyCtrl
                             $this->building_id,
                             $u,
                             $num,
-                            $this->_getTroopTrainingTime(nrToUnitId($u, Session::getInstance()->getRace())));
+                            $this->_getTroopTrainingTime(nrToUnitId($u, $this->village_race)));
                     }
                 }
             }
@@ -196,7 +198,7 @@ class TroopBuilding extends AnyCtrl
 
     public function _getTroopBuildingTroops()
     {
-        return self::_getTroopBuildingTroopsStatic(Session::getInstance()->getRace(), $this->building_id);
+        return self::_getTroopBuildingTroopsStatic($this->village_race, $this->building_id);
     }
 
     public static function _getTroopBuildingTroopsStatic($race, $building_id)
@@ -368,7 +370,7 @@ class TroopBuilding extends AnyCtrl
             26 => 'clock_medium',
         ][$this->building_id];
 
-        $view->vars['unitId'] = nrToUnitId($nr, Session::getInstance()->getRace());
+        $view->vars['unitId'] = nrToUnitId($nr, $this->village_race);
         $view->vars['cost'] = Formulas::uTrainingCost($view->vars['unitId'], $this->building_id == 30 || $this->building_id == 29);
         $view->vars['upkeep'] = Formulas::uUpkeep($view->vars['unitId'], Village::getInstance()->getHorseDrinkingPoolLvl());
         $view->vars['max'] = $training->getMaxUnitByNr($nr, $this->building_id == 30 || $this->building_id == 29);

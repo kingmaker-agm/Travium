@@ -303,7 +303,7 @@ class VillageModel
             logError("No building. while capture village");
         }
         $tribeSpecificArray = [31, 32, 33, 42, 43, 44, 45, 35, 36, 41];
-        if ($oldRace === $newRace) {
+        if ($oldRace === (int) $newRace) {
             for ($i = 19; $i <= 40; ++$i) {
                 if (!isset($buildings[$i])) {
                     continue;
@@ -354,7 +354,7 @@ class VillageModel
 
 
         $register = new RegisterModel();
-        $register->addUnits($kid, ($oldRace !== $newRace) ? $oldRace : $newRace);
+        $register->addUnits($kid, ($oldRace !== (int) $newRace) ? $oldRace : (int) $newRace);
         $register->addSmithy($kid);
         $register->addTech($kid);
         Map::villageDestroyOrCaptureOrNewVillageUpdate($kid);
