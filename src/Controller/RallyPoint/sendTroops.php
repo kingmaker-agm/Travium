@@ -849,14 +849,16 @@ class sendTroops extends RallyPointHTML
                 return FALSE;
             }
         }
-        if (!getCustom("skipProtectionOnAttack") && $this->hasBeginnerProtection($village->getKid()) == 1 && $owner != $session->getPlayerId()) {
-            if (!$skippedProtection) {
+        if ($session->hasProtection() && $owner != $session->getPlayerId() && !$skippedProtection) {
+            if ($attack_type == MovementsModel::ATTACKTYPE_NORMAL) {
+                $uid = $session->getPlayerId();
+                $now = time();
+                $db->query("UPDATE users SET protection=$now WHERE id=$uid");
+                $session->setProtection($now);
+                (new InfoBoxModel())->deleteInfoByType($uid, 6);
+                InfoBoxModel::invalidateUserInfoBoxCache($uid);
+            } else if (!getCustom("skipProtectionOnAttack")) {
                 return FALSE;
-            }
-        } else if ($this->hasBeginnerProtection($village->getKid()) && $owner != $session->getPlayerId()) {
-            if (!$skippedProtection && $attack_type == MovementsModel::ATTACKTYPE_NORMAL) {
-                $db->query("UPDATE users SET protection=" . time() . " WHERE id={$session->getPlayerId()}");
-                (new InfoBoxModel())->deleteInfoByType($session->getPlayerId(), 6);
             }
         }
         if ($isOasis) {
@@ -1247,12 +1249,13 @@ class sendTroops extends RallyPointHTML
         }
         if (Session::getInstance()->hasProtection() == 1 && $villageOwner != $session->getPlayerId()) {
             if (!Config::getProperty("custom", "skipProtectionOnAttack")) {
-                if ($this->result['settings']['attack_type'] == 2) {
+                if ($this->result['settings']['attack_type'] == MovementsModel::ATTACKTYPE_REINFORCEMENT) {
                     $this->result['beforeError'] = TRUE;
                     $this->result['beforeErrorMsg'] = T("RallyPoint", "Errors.cantSendReinforcementsDuringProtection");
                     return FALSE;
                 }
-                if (!$skippedProtection) {
+                if (!$skippedProtection
+                    && $this->result['settings']['attack_type'] != MovementsModel::ATTACKTYPE_NORMAL) {
                     $this->result['beforeError'] = TRUE;
                     $this->result['beforeErrorMsg'] = T("RallyPoint", "Errors.cantAttackDuringProtection");
                     return FALSE;
