@@ -541,7 +541,7 @@ $config = (object)[
             496 => 'Europe/London',
             497 => 'Asia/Amman',
             570 => 'Asia/Tehran',
-            328 => 'Asia/Calcutta',
+            328 => 'Asia/Kolkata',
             330 => 'Asia/Dubai',
             562 => 'Australia/ACT',
         ],
