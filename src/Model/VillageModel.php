@@ -268,6 +268,10 @@ class VillageModel
     public function captureVillage($uid, $kid, $pop, $newUid, $newUidPop, $newRace, $expandedFrom)
     {
         $db = DB::getInstance();
+        $oldRace = (int) $db->fetchScalar("SELECT race FROM units WHERE kid=$kid");
+        if (!$oldRace) {
+            $oldRace = (int) $db->fetchScalar("SELECT race FROM users WHERE id=$uid");
+        }
         if(getCustom('removeVillageFromFarmListOnCapture')){
             $db->query("DELETE FROM raidlist WHERE kid=$kid");
         }
@@ -296,7 +300,6 @@ class VillageModel
         while ($trapped = $traps->fetch_assoc()) {
             $helper->returnTrappedOrEnforcementRow($trapped, FALSE);
         }
-        $oldRace = (int) $db->fetchScalar("SELECT race FROM users WHERE id=$uid");
         //removing tribe specific buildings.
         $buildings = $this->getBuildingsAssoc($kid);
         if (sizeof($buildings) == 0) {
