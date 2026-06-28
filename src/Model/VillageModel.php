@@ -296,20 +296,23 @@ class VillageModel
         while ($trapped = $traps->fetch_assoc()) {
             $helper->returnTrappedOrEnforcementRow($trapped, FALSE);
         }
+        $oldRace = (int) $db->fetchScalar("SELECT race FROM users WHERE id=$uid");
         //removing tribe specific buildings.
         $buildings = $this->getBuildingsAssoc($kid);
         if (sizeof($buildings) == 0) {
             logError("No building. while capture village");
         }
         $tribeSpecificArray = [31, 32, 33, 42, 43, 44, 45, 35, 36, 41];
-        for ($i = 19; $i <= 40; ++$i) {
-            if (!isset($buildings[$i])) {
-                continue;
-            }
-            if (in_array($buildings[$i]['item_id'], $tribeSpecificArray)) {
-                BuildingAction::downgrade($kid, $i, 0, true);
-                $buildings[$i]['item_id'] = 0;
-                $buildings[$i]['level'] = 0;
+        if ($oldRace === $newRace) {
+            for ($i = 19; $i <= 40; ++$i) {
+                if (!isset($buildings[$i])) {
+                    continue;
+                }
+                if (in_array($buildings[$i]['item_id'], $tribeSpecificArray)) {
+                    BuildingAction::downgrade($kid, $i, 0, true);
+                    $buildings[$i]['item_id'] = 0;
+                    $buildings[$i]['level'] = 0;
+                }
             }
         }
         if ($newUidPop > $pop) {
@@ -351,7 +354,7 @@ class VillageModel
 
 
         $register = new RegisterModel();
-        $register->addUnits($kid, $newRace);
+        $register->addUnits($kid, ($oldRace !== $newRace) ? $oldRace : $newRace);
         $register->addSmithy($kid);
         $register->addTech($kid);
         Map::villageDestroyOrCaptureOrNewVillageUpdate($kid);
