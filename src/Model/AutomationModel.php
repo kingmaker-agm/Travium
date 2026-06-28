@@ -33,18 +33,23 @@ class AutomationModel
     {
         $db = DB::getInstance();
         $db->backup_tables(true);
+        $config = Config::getInstance();
+        $config->dynamic->serverFinished = $resultCode;
+        $db->query("UPDATE config SET serverFinished=$resultCode");
         if ($resultCode == 1) {
             $kid = $db->fetchScalar("SELECT kid FROM fdata WHERE f99=100");
-            $wData = $db->query("SELECT name, owner FROM vdata WHERE kid=$kid")->fetch_assoc();
-            $uData = $db->query("SELECT id, name, aid FROM users WHERE id={$wData['owner']}")->fetch_assoc();
-            $text = sprintf("The world round in this server is now finished by %s.", $uData['name']);
+            if ($kid) {
+                $wData = $db->query("SELECT name, owner FROM vdata WHERE kid=$kid")->fetch_assoc();
+                $uData = $wData ? $db->query("SELECT id, name, aid FROM users WHERE id={$wData['owner']}")->fetch_assoc() : null;
+                $winnerName = $uData['name'] ?? 'Unknown';
+            } else {
+                $winnerName = 'Unknown';
+            }
+            $text = sprintf("The world round in this server is now finished by %s.", $winnerName);
             Notification::notify("World round finished", $text);
         } else {
             Notification::notify("World round finished", "The world round in this server is now finished by Natars.");
         }
-        $config = Config::getInstance();
-        $config->dynamic->serverFinished = $resultCode;
-        $db->query("UPDATE config SET serverFinished=$resultCode");
         $messageModel = new PublicMsgModel();
         $messageModel->haveNewMessage($resultCode == 1 ? '[ServerFinishWinner]' : '[ServerFinishNoWinner]');
         $db->query("DELETE FROM auction");

@@ -10,6 +10,21 @@ use Model\ArtefactsModel;
 require dirname(__DIR__) . "/vendor/autoload.php";
 require __DIR__ . DIRECTORY_SEPARATOR . "bootstrap.php";
 
+function apply_cors_headers() {
+    global $globalConfig;
+    $allowedOrigins = $globalConfig['allowed_origins'] ?? [];
+    $requestOrigin = $_SERVER['HTTP_ORIGIN'] ?? '';
+    if (!empty($allowedOrigins) && in_array($requestOrigin, $allowedOrigins)) {
+        header("Access-Control-Allow-Origin: $requestOrigin");
+        header("Access-Control-Allow-Credentials: true");
+        header("Vary: Origin");
+    } else {
+        header("Access-Control-Allow-Origin: *");
+    }
+    header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+    header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding');
+}
+
 $uri = $_SERVER['REQUEST_URI'];
 $page = basename($uri, '?' . $_SERVER['QUERY_STRING']);
 if ($page == ('?' . $_SERVER['QUERY_STRING'])) {
@@ -69,10 +84,8 @@ if ($page == 'myInfo') {
 
 if ($uri == '/info') {
     $httpMethod = strtoupper($_SERVER['REQUEST_METHOD']);
+    apply_cors_headers();
     if ($httpMethod == 'OPTIONS') {
-        header("Access-Control-Allow-Origin: *");
-        header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
-        header('Access-Control-Allow-Headers: X-Requested-With, Content-Type, Origin, Authorization, Accept, Client-Security-Token, Accept-Encoding');
         http_response_code(200);
         return;
     }

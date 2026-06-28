@@ -403,7 +403,7 @@ class sendTroops extends RallyPointHTML
             $isOasis = $this->isOasis($this->result['settings']['to']['kid']);
             $isOasisOccupied = $isOasis ? $this->isOasisOccupied($this->result['settings']['to']['kid']) : false;
             //process spy :>
-            $sportCount = $this->result['settings']['units'][Formulas::getSpyId($session->getRace())];
+            $sportCount = $this->result['settings']['units'][Formulas::getSpyId(Village::getInstance()->getRace())];
             $nonSportCount = array_sum($this->result['settings']['units']) - $sportCount;
             if ($this->result['settings']['attack_type'] != 2 && $sportCount > 0 && $nonSportCount <= 0) {
                 $this->result['settings']['attack_type'] = 1;
@@ -421,7 +421,7 @@ class sendTroops extends RallyPointHTML
         }
         $units = [];
         for ($i = 1; $i <= 11; $i++) {
-            $units[nrToUnitId($i, $session->getRace())] = $this->result['settings']['units'][$i];
+            $units[nrToUnitId($i, Village::getInstance()->getRace())] = $this->result['settings']['units'][$i];
         }
         $row = [
             "owner" => [
@@ -491,8 +491,8 @@ class sendTroops extends RallyPointHTML
         $units_id = [];
         for ($i = 1; $i <= 10; $i++) {
             if ($this->result['settings']['units'][$i] > 0) {
-                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $session->getRace()));
-                $units_id[] = nrToUnitId($i, $session->getRace());
+                $speeds[] = Formulas::uSpeed(nrToUnitId($i, Village::getInstance()->getRace()));
+                $units_id[] = nrToUnitId($i, Village::getInstance()->getRace());
             }
         }
         $calculator = new SpeedCalculator();
@@ -849,14 +849,16 @@ class sendTroops extends RallyPointHTML
                 return FALSE;
             }
         }
-        if (!getCustom("skipProtectionOnAttack") && $this->hasBeginnerProtection($village->getKid()) == 1 && $owner != $session->getPlayerId()) {
-            if (!$skippedProtection) {
+        if ($session->hasProtection() && $owner != $session->getPlayerId() && !$skippedProtection) {
+            if ($attack_type == MovementsModel::ATTACKTYPE_NORMAL) {
+                $uid = $session->getPlayerId();
+                $now = time();
+                $db->query("UPDATE users SET protection=$now WHERE id=$uid");
+                $session->setProtection($now);
+                (new InfoBoxModel())->deleteInfoByType($uid, 6);
+                InfoBoxModel::invalidateUserInfoBoxCache($uid);
+            } else if (!getCustom("skipProtectionOnAttack")) {
                 return FALSE;
-            }
-        } else if ($this->hasBeginnerProtection($village->getKid()) && $owner != $session->getPlayerId()) {
-            if (!$skippedProtection) {
-                $db->query("UPDATE users SET protection=" . time() . " WHERE id={$session->getPlayerId()}");
-                (new InfoBoxModel())->deleteInfoByType($session->getPlayerId(), 6);
             }
         }
         if ($isOasis) {
@@ -1247,12 +1249,13 @@ class sendTroops extends RallyPointHTML
         }
         if (Session::getInstance()->hasProtection() == 1 && $villageOwner != $session->getPlayerId()) {
             if (!Config::getProperty("custom", "skipProtectionOnAttack")) {
-                if ($this->result['settings']['attack_type'] == 2) {
+                if ($this->result['settings']['attack_type'] == MovementsModel::ATTACKTYPE_REINFORCEMENT) {
                     $this->result['beforeError'] = TRUE;
                     $this->result['beforeErrorMsg'] = T("RallyPoint", "Errors.cantSendReinforcementsDuringProtection");
                     return FALSE;
                 }
-                if (!$skippedProtection) {
+                if (!$skippedProtection
+                    && $this->result['settings']['attack_type'] != MovementsModel::ATTACKTYPE_NORMAL) {
                     $this->result['beforeError'] = TRUE;
                     $this->result['beforeErrorMsg'] = T("RallyPoint", "Errors.cantAttackDuringProtection");
                     return FALSE;

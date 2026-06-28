@@ -426,7 +426,7 @@ class premiumFeature extends AjaxBase
         for($i=0; $i < 4;  $i++){      
             $resources[$i] = 0;          
             if(!$realPackage['is_single'] || ($realPackage['is_single'] && $realPackage['resource'] == $i+1)){
-                $resources[$i] = ($realPackage['hours']) *  $productionAvg;
+                $resources[$i] = ($realPackage['hours']) *  $productionAvg * 100;
             }
         }
         

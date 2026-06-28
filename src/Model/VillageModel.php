@@ -268,6 +268,10 @@ class VillageModel
     public function captureVillage($uid, $kid, $pop, $newUid, $newUidPop, $newRace, $expandedFrom)
     {
         $db = DB::getInstance();
+        $oldRace = (int) $db->fetchScalar("SELECT race FROM units WHERE kid=$kid");
+        if (!$oldRace) {
+            $oldRace = (int) $db->fetchScalar("SELECT race FROM users WHERE id=$uid");
+        }
         if(getCustom('removeVillageFromFarmListOnCapture')){
             $db->query("DELETE FROM raidlist WHERE kid=$kid");
         }
@@ -302,14 +306,16 @@ class VillageModel
             logError("No building. while capture village");
         }
         $tribeSpecificArray = [31, 32, 33, 42, 43, 44, 45, 35, 36, 41];
-        for ($i = 19; $i <= 40; ++$i) {
-            if (!isset($buildings[$i])) {
-                continue;
-            }
-            if (in_array($buildings[$i]['item_id'], $tribeSpecificArray)) {
-                BuildingAction::downgrade($kid, $i, 0, true);
-                $buildings[$i]['item_id'] = 0;
-                $buildings[$i]['level'] = 0;
+        if ($oldRace === (int) $newRace) {
+            for ($i = 19; $i <= 40; ++$i) {
+                if (!isset($buildings[$i])) {
+                    continue;
+                }
+                if (in_array($buildings[$i]['item_id'], $tribeSpecificArray)) {
+                    BuildingAction::downgrade($kid, $i, 0, true);
+                    $buildings[$i]['item_id'] = 0;
+                    $buildings[$i]['level'] = 0;
+                }
             }
         }
         if ($newUidPop > $pop) {
@@ -351,7 +357,7 @@ class VillageModel
 
 
         $register = new RegisterModel();
-        $register->addUnits($kid, $newRace);
+        $register->addUnits($kid, ($oldRace !== (int) $newRace) ? $oldRace : (int) $newRace);
         $register->addSmithy($kid);
         $register->addTech($kid);
         Map::villageDestroyOrCaptureOrNewVillageUpdate($kid);

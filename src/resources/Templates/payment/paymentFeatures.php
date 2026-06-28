@@ -160,7 +160,7 @@
                 $coins = $package['coins'];
                 $delivery = $package['delivery'];
                 $resourceId = $package['resource'];
-                $resourceAmt =  ($package['hours']) * $productionAvg;
+                $resourceAmt =  ($package['hours']) * $productionAvg * 100;
 
                 $HTML .= '<div class="featureData single">';
                     $HTML .= '<div class="featureTitle">';
@@ -207,7 +207,7 @@
                         //foreach($resources as $i => $resource){
                         for($i = 0; $i < 4; $i++){                            
                             $resourceId = $i;
-                            $resourceAmt =  ($package['hours']) * $productionAvg;
+                            $resourceAmt =  ($package['hours']) * $productionAvg * 100;
                             $HTML .= '<div class="inlineIcon resources"><i class="r'.($i + 1).'"></i>&nbsp;<span class="value ">' . number_format_x($resourceAmt) . '</span></div>';
                         }
                     $HTML .= '</div>';     
