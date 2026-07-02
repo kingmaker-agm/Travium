@@ -100,6 +100,9 @@
                         $disabled &=false;
                     }
                 }
+                if ($resourceLevel > 40 && !$village->isCapital()) {
+                    $disabled = true;
+                }
             }
 
             $HTML .= '<h3 class="featureTitle">' . sprintf(T("PaymentWizard", $featureNameForTranslation)) . '</h3>';

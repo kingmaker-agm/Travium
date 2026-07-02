@@ -3140,6 +3140,16 @@ $Definition['PaymentWizard']['upgradeAllResourcesTo20'] = 'Upgrade Resources Fie
 $Definition['PaymentWizard']['upgradeAllResourcesTo20Desc'] = '';
 $Definition['PaymentWizard']['upgradeAllResourcesTo30'] = 'Upgrade Resources Fields to level 30';
 $Definition['PaymentWizard']['upgradeAllResourcesTo30Desc'] = '';
+$Definition['PaymentWizard']['upgradeAllResourcesTo40'] = 'Upgrade Resources Fields to level 40';
+$Definition['PaymentWizard']['upgradeAllResourcesTo40Desc'] = '';
+$Definition['PaymentWizard']['upgradeAllResourcesTo50'] = 'Upgrade Resources Fields to level 50';
+$Definition['PaymentWizard']['upgradeAllResourcesTo50Desc'] = '';
+$Definition['PaymentWizard']['upgradeAllResourcesTo60'] = 'Upgrade Resources Fields to level 60';
+$Definition['PaymentWizard']['upgradeAllResourcesTo60Desc'] = '';
+$Definition['PaymentWizard']['upgradeAllResourcesTo80'] = 'Upgrade Resources Fields to level 80';
+$Definition['PaymentWizard']['upgradeAllResourcesTo80Desc'] = '';
+$Definition['PaymentWizard']['upgradeAllResourcesTo100'] = 'Upgrade Resources Fields to level 100';
+$Definition['PaymentWizard']['upgradeAllResourcesTo100Desc'] = '';
 //
 $Definition['productionOverview'] = ["HDP" => "آبشخوری اسب",
     "productionOverview" => "دید کلی منابع",

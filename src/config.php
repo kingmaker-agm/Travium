@@ -420,6 +420,11 @@ $config = (object)[
                 'upgradeAllResourcesTo10' => (object)['name'=>'upgradeAllResourcesTo10','id'=> 13,'bid'=>'res10','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 300],
                 'upgradeAllResourcesTo20' => (object)['name'=>'upgradeAllResourcesTo20','id'=> 14,'bid'=>'res20','img'=>'', 'enabled' => true, 'delivery' => 0, 'coinsCapital' => 500, 'coins' => 400],
                 'upgradeAllResourcesTo30' => (object)['name'=>'upgradeAllResourcesTo30','id'=> 15,'bid'=>'res30','img'=>'', 'enabled' => false, 'delivery' => 0, 'coins' => 700],
+                'upgradeAllResourcesTo40' => (object)['name'=>'upgradeAllResourcesTo40','id'=> 16,'bid'=>'res40','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 1000],
+                'upgradeAllResourcesTo50' => (object)['name'=>'upgradeAllResourcesTo50','id'=> 17,'bid'=>'res50','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 1300],
+                'upgradeAllResourcesTo60' => (object)['name'=>'upgradeAllResourcesTo60','id'=> 18,'bid'=>'res60','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 1600],
+                'upgradeAllResourcesTo80' => (object)['name'=>'upgradeAllResourcesTo80','id'=> 19,'bid'=>'res80','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 2200],
+                'upgradeAllResourcesTo100' => (object)['name'=>'upgradeAllResourcesTo100','id'=> 20,'bid'=>'res100','img'=>'', 'enabled' => true, 'delivery' => 0, 'coins' => 3000],
             ],
         ],
         'buyResources'             => [

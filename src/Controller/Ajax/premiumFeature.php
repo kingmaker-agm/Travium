@@ -513,7 +513,7 @@ class premiumFeature extends AjaxBase
             //$this->response['redirectTo'] = 'dorf1.php';
 
             $resourceLevel = preg_replace('/[^0-9]/', '', $bid);
-            if ($resourceLevel>=25 && !$village->isCapital()) return;
+            if ($resourceLevel > 40 && !$village->isCapital()) return;
             $done = true;
             $max = $resourceLevel;
             for ($i = 1; $i <= 18; ++$i) {
