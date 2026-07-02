@@ -79,7 +79,9 @@ class BuildingAction
         } else if ($item_id == 40) {
             (new SummaryModel())->setFirstWWUser($db->fetchScalar('SELECT name FROM users WHERE id=' . $villageRow['owner']));
             $to_level = $level + $levels;
-            if ($to_level > 95) {
+            if ($to_level >= 100) {
+                $finish = true;
+            } else if ($to_level > 95) {
                 $WonderOfTheWorld = new WonderOfTheWorldModel();
                 for ($i = 1; $i <= $levels; ++$i) {
                     $WonderOfTheWorld->attackWWVillage($kid, $to_level);
@@ -89,9 +91,6 @@ class BuildingAction
                 $WonderOfTheWorld->attackWWVillage($kid, $to_level);
             }
             $db->query("UPDATE fdata SET lastWWUpgrade=" . miliseconds() . " WHERE kid={$kid}");
-            if ($to_level >= 100) {
-                $finish = true;
-            }
         }
         if (in_array($item_id, [1, 2, 3, 4, 5, 6, 7, 8, 9, 45])) {
             ResourcesHelper::updateVillageResources($kid, false);

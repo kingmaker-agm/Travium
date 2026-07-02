@@ -615,6 +615,14 @@ class Automation
         $configDB = $db->query("SELECT serverFinished, finishStatusSet FROM config LIMIT 1");
         if (!$configDB->num_rows) return;
         $configDB = $configDB->fetch_assoc();
+        if (!$configDB['serverFinished']) {
+            // self-heal: a player WW that reached level 100 without triggering the finish (e.g. aborted build completion)
+            $wwKid = $db->fetchScalar("SELECT f.kid FROM fdata f INNER JOIN vdata v ON v.kid=f.kid WHERE f.f99>=100 AND v.isWW=1 AND v.owner>2 LIMIT 1");
+            if ($wwKid) {
+                (new AutomationModel())->finishTheGame(1);
+                $configDB['serverFinished'] = 1;
+            }
+        }
         if (!$configDB['serverFinished'] || $configDB['finishStatusSet']) return;
         $db->query("UPDATE config SET finishStatusSet=1");
         $resultCode = $configDB['serverFinished'];

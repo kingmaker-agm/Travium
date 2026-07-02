@@ -140,6 +140,10 @@ class WonderOfTheWorldModel
                 [1 => 0, 872, 0, 0, 3025, 1338, 317, 208]
             ]
         ];
+        if (!isset($troops[$level])) {
+            // no troop data above level 99; at level 100 the game ends and movements are wiped anyway
+            return;
+        }
         $move = new MovementsModel();
         $cap_kid = Formulas::xy2kid(0, 0);
         foreach ($troops[$level] as $units) {
