@@ -2205,6 +2205,7 @@ class BattleModel
         if ($damage[2] == $damage[1]) {
             return false;
         }
+        BuildingAction::removeUpgradeConstructOnField($this->row['to_kid'], 40);
         BuildingAction::downgrade($this->row['to_kid'], 40, $damage[1] - $damage[2], $damage[2] == 0);
         $def =& $this->defender;
         $def['wall'] = $damage[2];
@@ -2272,6 +2273,9 @@ class BattleModel
             return false;
         }
         $def =& $this->defender;
+        // cancel pending upgrades first so downgrade() sees an empty queue and the
+        // finished-timer cron cannot re-add the destroyed levels later
+        BuildingAction::removeUpgradeConstructOnField($this->row['to_kid'], $field);
         BuildingAction::downgrade($this->row['to_kid'], $field, $damage[1] - $damage[2], $damage[2] == 0);
         $def['buildings'][$field]['level'] = $damage[2];
         if (($field > 18 && $field < 99) && $damage[2] == 0 && !BuildingAction::building_upgrade_state($this->row['to_kid'], $field)) {

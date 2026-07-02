@@ -569,14 +569,25 @@ class Automation
         }
         $config = Config::getInstance();
         if (!$stmt['serverFinished']) {
-            $wwLevel = floor(max(time() - $config->timers->WWConstructStartTime, 0) / $config->timers->WWUpLvlInterval);
-            if ($wwLevel > 0) {
-                $natarsWWKid = $db->fetchScalar("SELECT kid FROM vdata WHERE isWW=1 AND owner<=2 LIMIT 1");
-                if ($natarsWWKid) {
-                    $db->query("UPDATE fdata SET f99=IF($wwLevel>100, 100, $wwLevel) WHERE kid=$natarsWWKid");
+            $interval  = (int)$config->timers->WWUpLvlInterval;
+            $startTime = (int)$config->timers->WWConstructStartTime;
+            $natarF99  = -1;
+            $natarsWW = $db->query("SELECT f.kid, f.f99, f.lastWWUpgrade FROM fdata f INNER JOIN vdata v ON v.kid=f.kid WHERE v.isWW=1 AND v.owner<=2 LIMIT 1");
+            if ($natarsWW->num_rows && $interval > 0 && time() >= $startTime) {
+                $row      = $natarsWW->fetch_assoc();
+                $natarF99 = (int)$row['f99'];
+                // level up relative to the actual (possibly catapult-damaged) f99: one level per
+                // elapsed interval since the last grant, so battle damage is not snapped back
+                $baseline = $row['lastWWUpgrade'] > 0 ? (int)floor($row['lastWWUpgrade'] / 1000) : $startTime;
+                $delta    = (int)floor((time() - $baseline) / $interval);
+                if ($delta > 0 && $natarF99 < 100) {
+                    $granted = min($delta, 100 - $natarF99);
+                    $newLast = ($baseline + $delta * $interval) * 1000;
+                    $db->query("UPDATE fdata SET f99=LEAST(f99+$granted,100), lastWWUpgrade=$newLast WHERE kid={$row['kid']}");
+                    $natarF99 += $granted;
                 }
             }
-            if ($wwLevel >= 100) {
+            if ($natarF99 >= 100) {
                 (new AutomationModel())->finishTheGame(2);
             } else if (time() >= Config::getProperty("timers", "AutoFinishTime")) {
                 (new AutomationModel())->finishTheGame(2);
