@@ -169,6 +169,12 @@ class TroopBuilding extends AnyCtrl
                     if ($num <= 0) {
                         continue;
                     }
+                    $training_time = $this->_getTroopTrainingTime(nrToUnitId($u, $this->village_race));
+                    // Cap by time budget so commence/end_time can never overflow BIGINT/int64
+                    $num = (int)min($num, $m->getMaxTrainableByTime(Village::getInstance()->getKid(), $this->building_id, $training_time));
+                    if ($num <= 0) {
+                        continue;
+                    }
                     if ($num >= 20 && ($this->building_id == 19 || $this->building_id == 29)) {
                         $dailyQuest->setQuestAsCompleted(Session::getInstance()->getPlayerId(), 8);
                     } else if ($num >= 20 && ($this->building_id == 20 || $this->building_id == 30)) {
@@ -177,7 +183,8 @@ class TroopBuilding extends AnyCtrl
                     if ($this->building_id == 19 && $num >= 2) {
                         $quest->setQuestBitwise('battle', 5, 1);
                     }
-                    $cost = Formulas::uTrainingCost(nrToUnitId($u, $this->village_race), $great);
+                    $baseCost = Formulas::uTrainingCost(nrToUnitId($u, $this->village_race), $great);
+                    $cost = $baseCost;
                     foreach ($cost as &$v) {
                         $v *= $num;
                     }
@@ -185,11 +192,20 @@ class TroopBuilding extends AnyCtrl
                         continue;
                     }
                     if (Village::getInstance()->modifyResources($cost)) {
-                        $m->addTraining(Village::getInstance()->getKid(),
+                        $queued = $m->addTraining(Village::getInstance()->getKid(),
                             $this->building_id,
                             $u,
                             $num,
-                            $this->_getTroopTrainingTime(nrToUnitId($u, $this->village_race)));
+                            $training_time);
+                        if ($queued < $num) {
+                            // Refund units that could not be queued (failed INSERT or safety clamp)
+                            $refund = $baseCost;
+                            foreach ($refund as &$rv) {
+                                $rv *= ($num - $queued);
+                            }
+                            unset($rv);
+                            Village::getInstance()->modifyResources($refund, 1);
+                        }
                     }
                 }
             }

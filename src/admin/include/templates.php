@@ -2387,6 +2387,10 @@ if ($templateName == 'tpl/layout.tpl'): ?>
         addAdminChangeEventListener("needPreregistrationCode", "needPreregistrationCode");
         addAdminChangeEventListener("maintenance", "maintenance");
         addAdminChangeEventListener("registerClosed", "registerClosed");
+        addAdminChangeEventListener("multiplierBuyResources", "multiplierBuyResources");
+        addAdminChangeEventListener("multiplierBuyAnimals", "multiplierBuyAnimals");
+        addAdminChangeEventListener("multiplierBuyTroops", "multiplierBuyTroops");
+        addAdminChangeEventListener("multiplierNatureSpawn", "multiplierNatureSpawn");
     </script>
 <?php elseif ($templateName == 'tpl/troop_tbody.tpl'): ?>
     <tbody class="troops">

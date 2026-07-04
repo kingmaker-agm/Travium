@@ -358,7 +358,7 @@ class premiumFeature extends AjaxBase
         $legionaire_id = nrToUnitId(1, 1);  
         $legionaire_train =  round(($modifier * 3600 * $rate) / Formulas::uTrainingTime($legionaire_id, 20));
         $legionaire_def = $model->stat_with_upg($legionaire['def_i'], $legionaire['cu'], 1) + $model->stat_with_upg($legionaire['def_c'], $legionaire['cu'], 1);  
-        $baseLineDef = ($legionaire_train * $legionaire_def) / 10;
+        $baseLineDef = (($legionaire_train * $legionaire_def) / 10) * getGameplayMultiplier('multiplierBuyAnimals');
 
         for ($k = 0; $k<=9; $k++){
             $unit = Formulas::$data['units'][3][$k];
@@ -426,7 +426,7 @@ class premiumFeature extends AjaxBase
         for($i=0; $i < 4;  $i++){      
             $resources[$i] = 0;          
             if(!$realPackage['is_single'] || ($realPackage['is_single'] && $realPackage['resource'] == $i+1)){
-                $resources[$i] = ($realPackage['hours']) *  $productionAvg * 100;
+                $resources[$i] = (int)round(($realPackage['hours']) * $productionAvg * 100 * getGameplayMultiplier('multiplierBuyResources'));
             }
         }
         
@@ -478,7 +478,7 @@ class premiumFeature extends AjaxBase
         $this->response['data']['functionToCall'] = 'productPurchased';
         $db = DB::getInstance();
 
-        $unitAmt =  round(($realPackage['hours'] * 3600 * $rate) / Formulas::uTrainingTime($unitId, 20));
+        $unitAmt = (int)round((($realPackage['hours'] * 3600 * $rate) / Formulas::uTrainingTime($unitId, 20)) * getGameplayMultiplier('multiplierBuyTroops'));
         $coins = $realPackage['coins'];
 
         if (GoldHelper::decreaseGold(Session::getInstance()->getPlayerId(), $coins)) {

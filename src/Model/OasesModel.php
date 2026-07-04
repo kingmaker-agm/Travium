@@ -36,7 +36,8 @@ class OasesModel
 
         $gameProgress = (time() - getGame('start_time')) / (getGame('round_length') * 86400);
         $speedFactor = max(1, getGameSpeed() / 50);
-        $maximum = (int)round(15 * $speedFactor);
+        $natureMultiplier = getGameplayMultiplier('multiplierNatureSpawn');
+        $maximum = (int)round(15 * $speedFactor * $natureMultiplier);
         $sum = 0;
         for ($i = 1; $i <= 10; ++$i) {
             $sum += $units['u' . $i];
@@ -65,7 +66,7 @@ class OasesModel
         for($i = 1; $i <= $num; ++$i){
             shuffle($troops);
             $unitId = $troops[mt_rand(0, sizeof($troops) - 1)];
-            $amount = (int)round(mt_rand(1, 3) * $speedFactor);
+            $amount = (int)round(mt_rand(1, 3) * $speedFactor * $natureMultiplier);
             $amount = min($amount, $maximum - $sum);
             $db->query("UPDATE units SET u{$unitId}=u{$unitId}+$amount WHERE kid=$kid");
 

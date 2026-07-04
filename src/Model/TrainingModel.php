@@ -17,6 +17,11 @@ use function var_dump;
 
 class TrainingModel
 {
+    // Ceiling for commence/end_time values: must stay below PHP_INT_MAX (9.2e18)
+    // and BIGINT UNSIGNED max (1.8e19) so the arithmetic never overflows to float
+    // and the INSERT never gets a scientific-notation literal.
+    const MAX_SAFE_TIME = 4000000000000000000;
+
     public function getTraining($kid, $item_id)
     {
         $db = DB::getInstance();
@@ -27,18 +32,43 @@ class TrainingModel
     {
         $time = getGame("useNanoseconds") ? nanoseconds() : (getGame("useMilSeconds") ? miliseconds() : time());
         $db = DB::getInstance();
-        $commence = $db->fetchScalar("SELECT end_time FROM training WHERE item_id=$item_id AND kid=$kid ORDER BY end_time DESC LIMIT 1");
-        $commence = $commence > $time ? $commence : $time;
-        $commence = $commence + $training_time;
+        $training_time = max(1, (int)min($training_time, self::MAX_SAFE_TIME));
+        $commence = $this->getQueueTailEnd($kid, $item_id, $time) + $training_time;
+        if ($commence > self::MAX_SAFE_TIME) {
+            return 0;
+        }
+        $num = (int)min($num, intdiv(self::MAX_SAFE_TIME - $commence, $training_time) + 1);
+        if ($num < 1) {
+            return 0;
+        }
         $end_time = $commence + (($num - 1) * $training_time);
-        $db->query("INSERT INTO training(`kid`, `nr`, `num`, `item_id`, `training_time`, `commence`, `end_time`) VALUES ($kid, $nr, $num, $item_id, $training_time, $commence, $end_time)");
+        $result = $db->query("INSERT INTO training(`kid`, `nr`, `num`, `item_id`, `training_time`, `commence`, `end_time`) VALUES ($kid, $nr, $num, $item_id, $training_time, $commence, $end_time)");
+        return $result ? $num : 0;
+    }
+
+    public function getMaxTrainableByTime($kid, $item_id, $training_time)
+    {
+        $time = getGame("useNanoseconds") ? nanoseconds() : (getGame("useMilSeconds") ? miliseconds() : time());
+        $training_time = max(1, (int)min($training_time, self::MAX_SAFE_TIME));
+        $commence = $this->getQueueTailEnd($kid, $item_id, $time) + $training_time;
+        if ($commence > self::MAX_SAFE_TIME) {
+            return 0;
+        }
+        return intdiv(self::MAX_SAFE_TIME - $commence, $training_time) + 1;
+    }
+
+    private function getQueueTailEnd($kid, $item_id, $time)
+    {
+        $db = DB::getInstance();
+        $tail = $db->fetchScalar("SELECT end_time FROM training WHERE item_id=$item_id AND kid=$kid ORDER BY end_time DESC LIMIT 1");
+        return max(min((int)$tail, self::MAX_SAFE_TIME), (int)$time);
     }
 
     public function getTotalTrainingTime($kid, $item_id)
     {
         $db = DB::getInstance();
 
-        return $db->fetchScalar("SELECT SUM(training_time*num) FROM training WHERE item_id=$item_id AND kid=$kid");
+        return $db->fetchScalar("SELECT SUM(CAST(training_time AS DECIMAL(65))*num) FROM training WHERE item_id=$item_id AND kid=$kid");
     }
 
     public function getTechnology($kid)
@@ -73,7 +103,7 @@ class TrainingModel
         } else if (Config::getProperty("game", "useMilSeconds")) {
             $rate = 1000;
         }
-        $totalTrainingTime = $db->fetchScalar("SELECT SUM(training_time*num) FROM training WHERE kid=$kid");
+        $totalTrainingTime = $db->fetchScalar("SELECT SUM(CAST(training_time AS DECIMAL(65))*num) FROM training WHERE kid=$kid");
         $totalTrainingTime = (int)$totalTrainingTime / $rate;
         $threshold = Config::getProperty("extraSettings", "generalOptions", "finishTraining", "threshold");
         return max(1, ceil($totalTrainingTime / $threshold));

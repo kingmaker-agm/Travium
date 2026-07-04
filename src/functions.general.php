@@ -40,6 +40,14 @@ function getGame($name)
     return (property_exists($config->game, $name)) ? $config->game->$name : false;
 }
 
+function getGameplayMultiplier($name)
+{
+    $config = Config::getInstance();
+    if (!property_exists($config->dynamic, $name)) return 1.0;
+    $value = (float)$config->dynamic->$name;
+    return $value > 0 ? $value : 1.0;
+}
+
 function logError($error, $parameters = [])
 {
     $text = vsprintf($error, $parameters);

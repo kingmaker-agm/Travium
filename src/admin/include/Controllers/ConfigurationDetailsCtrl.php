@@ -129,6 +129,17 @@ class ConfigurationDetailsCtrl
                                                 <option value="on" ' . ($config->dynamic->fakeAccountProcess == 1 ? 'selected' : '') . '>On</option>
                                                 <option value="off" ' . ($config->dynamic->fakeAccountProcess == 0 ? 'selected' : '') . '>Off</option>
                                             </select>');
+        foreach ([
+                     'multiplierBuyResources' => 'Buy-resources multiplier',
+                     'multiplierBuyAnimals'   => 'Buy-animals multiplier',
+                     'multiplierBuyTroops'    => 'Buy-troops multiplier',
+                     'multiplierNatureSpawn'  => 'Nature oasis spawn multiplier',
+                 ] as $key => $label) {
+            $value = property_exists($config->dynamic, $key) ? (float)$config->dynamic->$key : 1.0;
+            $this->addInfo($params['content'],
+                $label,
+                '<input type="text" id="' . $key . '" value="' . $value . '" style="width: 55px;" maxlength="6" />');
+        }
         $dispatcher->appendContent(Template::getInstance()->load($params, 'tpl/ServerInfo.tpl')->getAsString());
         $dispatcher->appendContent('</div>');
         $dispatcher->appendContent('<div style="float: right; width: 49%">');
@@ -264,6 +275,15 @@ class ConfigurationDetailsCtrl
             $state = $_GET['fakeAccountProcess'] == 'on' ? 1 : 0;
             $config->dynamic->fakeAccountProcess = $state;
             $db->query("UPDATE config SET fakeAccountProcess=$state");
+        } else {
+            foreach (['multiplierBuyResources', 'multiplierBuyAnimals', 'multiplierBuyTroops', 'multiplierNatureSpawn'] as $key) {
+                if (!isset($_GET[$key])) continue;
+                $value = max(0.1, min(100, (float)$_GET[$key]));
+                AdminLog::getInstance()->addLog("Changed $key to $value.");
+                $config->dynamic->$key = $value;
+                $db->query("UPDATE config SET $key=$value");
+                break;
+            }
         }
     }
 
