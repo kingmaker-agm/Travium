@@ -291,14 +291,14 @@ class TroopBuilding extends AnyCtrl
                 switch ($building_id) {
                     case 19:
                     case 29:
-                        return [41, 42, 42, 43, 44];
+                        return [41, 42, 43, 44];
                         break;
                     case 20:
                     case 30:
                         return [45, 46];
                         break;
                     case 21:
-                        return [47, 78];
+                        return [47, 48];
                         break;
                     case 25:
                     case 26:

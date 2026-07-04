@@ -4,7 +4,6 @@ namespace Game;
 
 use Core\Caching\Caching;
 use Core\Database\DB;
-use Core\Session;
 use Core\Village;
 use Model\Quest;
 use Model\villageOverviewModel;
@@ -177,7 +176,7 @@ class TrainingHelper
         // trapped settlers/chiefs calculation required
         $settlerslots = ($maxslots * 3) - $settlers - ($chiefs * 3);
         $chiefslots = $maxslots - $chiefs - floor(($settlers + 2) / 3);
-        $cost = Formulas::uTrainingCost(nrToUnitId(10, Session::getInstance()->getRace()));
+        $cost = Formulas::uTrainingCost(nrToUnitId(10, Village::getInstance()->getRace()));
         $can = [];
         foreach ($village->getCurrentResources(-1, TRUE) as $r => $v) {
             $can[$r] = floor($v / $cost[$r]);
@@ -188,7 +187,7 @@ class TrainingHelper
         if ($nr == 10) {
             return $calc ? $settlerslots : min($can);
         }
-        $cost = Formulas::uTrainingCost(nrToUnitId(9, Session::getInstance()->getRace()));
+        $cost = Formulas::uTrainingCost(nrToUnitId(9, Village::getInstance()->getRace()));
         $can = [];
         foreach ($village->getCurrentResources(-1, TRUE) as $r => $v) {
             $can[$r] = floor($v / $cost[$r]);
@@ -266,12 +265,12 @@ class TrainingHelper
         // trapped settlers/chiefs calculation required
         $settlerslots = ($maxslots * 3) - $settlers - ($chiefs * 3);
         $chiefslots = $maxslots - $chiefs - floor(($settlers + 2) / 3);
-        $cost = Formulas::uTrainingCost(nrToUnitId(10, Session::getInstance()->getRace()));
+        $cost = Formulas::uTrainingCost(nrToUnitId(10, Village::getInstance()->getRace()));
         $can = min(floor(array_sum($village->getCurrentResources(-1, TRUE)) / array_sum($cost)), $settlerslots);
         if ($nr == 10) {
             return $calc ? $settlerslots : (is_array($can) ? min($can) : $can);
         }
-        $cost = Formulas::uTrainingCost(nrToUnitId(9, Session::getInstance()->getRace()));
+        $cost = Formulas::uTrainingCost(nrToUnitId(9, Village::getInstance()->getRace()));
         $can = min(floor(array_sum($village->getCurrentResources()) / array_sum($cost)), $chiefslots);
         if ($nr == 9) {
             return $calc ? $chiefslots : (is_array($can) ? min($can) : $can);
@@ -284,17 +283,15 @@ class TrainingHelper
 
     private function maxUnits2($nr, $great)
     {
-        $session = Session::getInstance();
         $village = Village::getInstance();
-        $cost = Formulas::uTrainingCost(nrToUnitId($nr, $session->getRace()), $great);
+        $cost = Formulas::uTrainingCost(nrToUnitId($nr, $village->getRace()), $great);
         return floor(array_sum($village->getCurrentResources()) / array_sum($cost));
     }
 
     private function maxUnits($nr, $great)
     {
-        $session = Session::getInstance();
         $village = Village::getInstance();
-        $cost = Formulas::uTrainingCost(nrToUnitId($nr, $session->getRace()), $great);
+        $cost = Formulas::uTrainingCost(nrToUnitId($nr, $village->getRace()), $great);
         $can = [];
         foreach ($village->getCurrentResources(-1, TRUE) as $r => $v) {
             $can[$r] = floor($v / $cost[$r]);

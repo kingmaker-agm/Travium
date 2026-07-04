@@ -2440,19 +2440,22 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 6,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 120,
+                                        1 => 100,
+                                        2 => 150,
+                                        3 => 30,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 1600,
+                                'cap' => 50,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        19 => 1,
+                                    ),
                             ),
                         1 =>
                             array(
@@ -2462,19 +2465,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 7,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 100,
+                                        1 => 130,
+                                        2 => 160,
+                                        3 => 70,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 1760,
+                                'cap' => 20,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        13 => 1,
+                                        22 => 1,
+                                    ),
                             ),
                         2 =>
                             array(
@@ -2484,19 +2491,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 6,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 150,
+                                        1 => 160,
+                                        2 => 210,
+                                        3 => 80,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 1920,
+                                'cap' => 50,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        13 => 1,
+                                        22 => 5,
+                                    ),
                             ),
                         3 =>
                             array(
@@ -2506,19 +2517,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 25,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 140,
+                                        1 => 160,
+                                        2 => 20,
+                                        3 => 40,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
+                                'time' => 1360,
                                 'cap' => 0,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        13 => 1,
+                                        22 => 5,
+                                    ),
                             ),
                         4 =>
                             array(
@@ -2528,19 +2543,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 14,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 550,
+                                        1 => 440,
+                                        2 => 320,
+                                        3 => 100,
                                     ),
                                 'cu' => 2,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 2640,
+                                'cap' => 100,
                                 'type' => 'c',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        20 => 5,
+                                        22 => 5,
+                                    ),
                             ),
                         5 =>
                             array(
@@ -2550,19 +2569,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 12,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 550,
+                                        1 => 640,
+                                        2 => 800,
+                                        3 => 180,
                                     ),
                                 'cu' => 3,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 3520,
+                                'cap' => 70,
                                 'type' => 'c',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        20 => 10,
+                                        22 => 5,
+                                    ),
                             ),
                         6 =>
                             array(
@@ -2572,19 +2595,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 5,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 900,
+                                        1 => 360,
+                                        2 => 500,
+                                        3 => 70,
                                     ),
                                 'cu' => 4,
-                                'time' => 0,
+                                'time' => 4600,
                                 'cap' => 0,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        21 => 1,
+                                        22 => 10,
+                                    ),
                             ),
                         7 =>
                             array(
@@ -2594,19 +2621,23 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 3,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 950,
+                                        1 => 1350,
+                                        2 => 600,
+                                        3 => 90,
                                     ),
                                 'cu' => 5,
-                                'time' => 0,
+                                'time' => 9000,
                                 'cap' => 0,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 1800,
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        21 => 10,
+                                        22 => 15,
+                                    ),
                             ),
                         8 =>
                             array(
@@ -2616,13 +2647,13 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 5,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 30750,
+                                        1 => 27200,
+                                        2 => 45000,
+                                        3 => 37500,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
+                                'time' => 90700,
                                 'cap' => 0,
                                 'type' => 'i',
                                 'mask' => 0,
@@ -2633,7 +2664,11 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                         1 => 200,
                                     ),
                                 'race' => 4,
-                                'breq' => NULL,
+                                'breq' =>
+                                    array(
+                                        16 => 10,
+                                        22 => 20,
+                                    ),
                             ),
                         9 =>
                             array(
@@ -2643,14 +2678,14 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
                                 'speed' => 5,
                                 'cost' =>
                                     array(
-                                        0 => 0,
-                                        1 => 0,
-                                        2 => 0,
-                                        3 => 0,
+                                        0 => 4600,
+                                        1 => 4200,
+                                        2 => 5800,
+                                        3 => 4400,
                                     ),
                                 'cu' => 1,
-                                'time' => 0,
-                                'cap' => 0,
+                                'time' => 26900,
+                                'cap' => 3000,
                                 'type' => 'i',
                                 'mask' => 0,
                                 'rs_time' => 0,
@@ -3444,7 +3479,6 @@ Crannies have 20% less capacity against teuton raids with hero + 10-20% from any
             return [35, 30, 10, 20];
         } //trap
         $race = unitIdToTribe($u);
-        if ($race == 5) $race = 1; // Natars to roman
         $race = $race - 1;
         $u = unitIdToNr($u) - 1;
         $cost = self::$data['units'][$race][$u]['cost'];
