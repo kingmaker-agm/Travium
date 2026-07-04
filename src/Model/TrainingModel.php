@@ -32,29 +32,25 @@ class TrainingModel
     {
         $time = getGame("useNanoseconds") ? nanoseconds() : (getGame("useMilSeconds") ? miliseconds() : time());
         $db = DB::getInstance();
-        $training_time = max(1, (int)min($training_time, self::MAX_SAFE_TIME));
-        $commence = $this->getQueueTailEnd($kid, $item_id, $time) + $training_time;
-        if ($commence > self::MAX_SAFE_TIME) {
-            return 0;
-        }
-        $num = (int)min($num, intdiv(self::MAX_SAFE_TIME - $commence, $training_time) + 1);
+        $tailEnd = $this->getQueueTailEnd($kid, $item_id, $time);
+        $budget = self::MAX_SAFE_TIME - $tailEnd;
+        // even at 1 tick per unit the count cannot exceed the time budget
+        $num = (int)min($num, $budget);
         if ($num < 1) {
             return 0;
         }
-        $end_time = $commence + (($num - 1) * $training_time);
+        // compress the per-unit time so the full count finishes within the budget
+        $training_time = max(1, (int)min($training_time, intdiv($budget, $num)));
+        $commence = $tailEnd + $training_time;
+        $end_time = $tailEnd + ($num * $training_time);
         $result = $db->query("INSERT INTO training(`kid`, `nr`, `num`, `item_id`, `training_time`, `commence`, `end_time`) VALUES ($kid, $nr, $num, $item_id, $training_time, $commence, $end_time)");
         return $result ? $num : 0;
     }
 
-    public function getMaxTrainableByTime($kid, $item_id, $training_time)
+    public function getMaxTrainableByTime($kid, $item_id)
     {
         $time = getGame("useNanoseconds") ? nanoseconds() : (getGame("useMilSeconds") ? miliseconds() : time());
-        $training_time = max(1, (int)min($training_time, self::MAX_SAFE_TIME));
-        $commence = $this->getQueueTailEnd($kid, $item_id, $time) + $training_time;
-        if ($commence > self::MAX_SAFE_TIME) {
-            return 0;
-        }
-        return intdiv(self::MAX_SAFE_TIME - $commence, $training_time) + 1;
+        return max(0, self::MAX_SAFE_TIME - $this->getQueueTailEnd($kid, $item_id, $time));
     }
 
     private function getQueueTailEnd($kid, $item_id, $time)

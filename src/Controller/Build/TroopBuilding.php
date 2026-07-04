@@ -170,8 +170,9 @@ class TroopBuilding extends AnyCtrl
                         continue;
                     }
                     $training_time = $this->_getTroopTrainingTime(nrToUnitId($u, $this->village_race));
-                    // Cap by time budget so commence/end_time can never overflow BIGINT/int64
-                    $num = (int)min($num, $m->getMaxTrainableByTime(Village::getInstance()->getKid(), $this->building_id, $training_time));
+                    // Cap by time budget so commence/end_time can never overflow BIGINT/int64;
+                    // per-unit time is compressed in addTraining, so this only guards the extremes
+                    $num = (int)min($num, $m->getMaxTrainableByTime(Village::getInstance()->getKid(), $this->building_id));
                     if ($num <= 0) {
                         continue;
                     }
