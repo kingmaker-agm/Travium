@@ -134,6 +134,7 @@ class ConfigurationDetailsCtrl
                      'multiplierBuyAnimals'   => 'Buy-animals multiplier',
                      'multiplierBuyTroops'    => 'Buy-troops multiplier',
                      'multiplierNatureSpawn'  => 'Nature oasis spawn multiplier',
+                     'multiplierTraderCapacity' => 'Trader capacity multiplier',
                  ] as $key => $label) {
             $value = property_exists($config->dynamic, $key) ? (float)$config->dynamic->$key : 1.0;
             $this->addInfo($params['content'],
@@ -276,9 +277,10 @@ class ConfigurationDetailsCtrl
             $config->dynamic->fakeAccountProcess = $state;
             $db->query("UPDATE config SET fakeAccountProcess=$state");
         } else {
-            foreach (['multiplierBuyResources', 'multiplierBuyAnimals', 'multiplierBuyTroops', 'multiplierNatureSpawn'] as $key) {
+            foreach (['multiplierBuyResources', 'multiplierBuyAnimals', 'multiplierBuyTroops', 'multiplierNatureSpawn', 'multiplierTraderCapacity'] as $key) {
                 if (!isset($_GET[$key])) continue;
-                $value = max(0.1, min(100, (float)$_GET[$key]));
+                // upper bound matches the DECIMAL(6,2) config column, not a gameplay cap
+                $value = max(0.1, min(9999.99, (float)$_GET[$key]));
                 AdminLog::getInstance()->addLog("Changed $key to $value.");
                 $config->dynamic->$key = $value;
                 $db->query("UPDATE config SET $key=$value");

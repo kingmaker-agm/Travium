@@ -7,7 +7,7 @@ use Game\NoticeHelper;
 use Model\InfoBoxModel;
 use Game\Formulas;
 require_once __DIR__ . DIRECTORY_SEPARATOR . "bootstrap.php";
-define("PATCH_VERSION", 100);
+define("PATCH_VERSION", 101);
 define("FORCE_PATCH", false);
 define("IS_UPDATE", true);
 set_time_limit(0);
@@ -328,6 +328,9 @@ if($currentVersion <= 99){
     $db->query("ALTER TABLE `config` ADD `multiplierBuyAnimals` DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00' AFTER `multiplierBuyResources`;");
     $db->query("ALTER TABLE `config` ADD `multiplierBuyTroops` DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00' AFTER `multiplierBuyAnimals`;");
     $db->query("ALTER TABLE `config` ADD `multiplierNatureSpawn` DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00' AFTER `multiplierBuyTroops`;");
+}
+if($currentVersion <= 100){
+    $db->query("ALTER TABLE `config` ADD `multiplierTraderCapacity` DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00' AFTER `multiplierNatureSpawn`;");
 }
 //ALTER TABLE `ndata` ADD INDEX( `uid`, `to_kid`, `type`);
 /***************************** PATCHES END **********************************/

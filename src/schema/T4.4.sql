@@ -1018,6 +1018,7 @@ CREATE TABLE IF NOT EXISTS `config`
   `multiplierBuyAnimals`        DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00',
   `multiplierBuyTroops`         DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00',
   `multiplierNatureSpawn`       DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00',
+  `multiplierTraderCapacity`    DECIMAL(6,2) UNSIGNED NOT NULL DEFAULT '1.00',
   `isRestore`                   TINYINT(1) UNSIGNED NOT NULL DEFAULT '0',
   `loginInfoTitle`              VARCHAR(100)        NOT NULL,
   `loginInfoHTML`               LONGTEXT            NOT NULL,

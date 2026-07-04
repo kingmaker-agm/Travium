@@ -2391,6 +2391,7 @@ if ($templateName == 'tpl/layout.tpl'): ?>
         addAdminChangeEventListener("multiplierBuyAnimals", "multiplierBuyAnimals");
         addAdminChangeEventListener("multiplierBuyTroops", "multiplierBuyTroops");
         addAdminChangeEventListener("multiplierNatureSpawn", "multiplierNatureSpawn");
+        addAdminChangeEventListener("multiplierTraderCapacity", "multiplierTraderCapacity");
     </script>
 <?php elseif ($templateName == 'tpl/troop_tbody.tpl'): ?>
     <tbody class="troops">
