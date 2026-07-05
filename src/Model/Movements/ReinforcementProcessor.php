@@ -25,7 +25,10 @@ class ReinforcementProcessor
         $m = new AutomationModel();
         $db = DB::getInstance();
         if (!$this->getVillageState($row['to_kid'])) {
-            if ($row['race'] <> 5) {
+            // only NPC Natar (home village owned by uid 1) troops are consumed;
+            // player-owned Natar-tribe reinforcements are bounced back home
+            $sourceOwner = (int)$db->fetchScalar("SELECT owner FROM vdata WHERE kid={$row['kid']}");
+            if ($row['race'] <> 5 || $sourceOwner > 1) {
                 $this->returnTroops($row);
             }
             return true;
