@@ -831,7 +831,7 @@ HTML;
         if (!$isMaster) {
             //finalized
             $commence = time();
-            if ($this->session->getRace() == 1) {
+            if ($this->getRace() == 1) {
                 if ($field > 18 && $this->workers['buildsNum'] > 0) {
                     $commence = $this->getLastCommence($field <= 18);
                 } else if ($field <= 18 && $this->workers['fieldsNum'] > 0) {
@@ -926,7 +926,7 @@ HTML;
         if ($isWWQueue) {
             $maxTasks = 2;
         }
-        if ($this->session->getRace() == 1) {
+        if ($this->getRace() == 1) {
             return [
                 'isMasterBusy' => $master >= ($this->isWW() ? $config->masterBuilder->maxTasksInWonder : $config->masterBuilder->maxTasksInNoneWonder),
                 'isBusy' => (($isField) ? ($fieldsNum >= $maxTasks) : ($buildsNum >= $maxTasks)) || ($fieldsNum + $buildsNum) >= 3,
@@ -1018,7 +1018,7 @@ HTML;
     private function getLastCommence($isField, $id = null, $false = false)
     {
         $kid = $this->session->getSelectedVillageID();
-        if ($this->session->getRace() == 1) {
+        if ($this->getRace() == 1) {
             $minField = $isField ? 1 : 19;
             $maxField = $isField ? 18 : 100;
         } else {
@@ -1349,7 +1349,7 @@ HTML;
             ++$tmp[$v['building_field']];
             $previousCommence = &$lastCommence[$v['building_field'] <= 18 ? 'field' : 'building'];
             $maxTime = $v['start_time'];
-            if(!($this->session->getRace() == 1 && sizeof($previousCommence) <= 2)){
+            if(!($this->getRace() == 1 && sizeof($previousCommence) <= 2)){
                 $max = max($previousCommence);
                 if($max > 0){
                     $maxTime += max($previousCommence) - $v['start_time'];
@@ -1436,7 +1436,7 @@ HTML;
         $this->buildings[$field]['item_id'] = $item_id;
         if (!$isMaster) {
             $commence = time();
-            if ($this->session->getRace() == 1) {
+            if ($this->getRace() == 1) {
                 if ($field > 18 && $this->workers['buildsNum'] > 0) {
                     $commence = $this->getLastCommence($field <= 18);
                 } else if ($field <= 18 && $this->workers['fieldsNum'] > 0) {
@@ -1520,7 +1520,7 @@ HTML;
     {
         if ($item_id == 40 && !$this->isWW()) return -1;
         $dep = $this->helper->canCreateNewBuild($this->isCapital(),
-            $this->session->getRace(),
+            $this->getRace(),
             $item_id,
             $this->buildings);
         if ($item_id == 26) {

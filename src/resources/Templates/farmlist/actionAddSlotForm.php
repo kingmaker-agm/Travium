@@ -67,16 +67,17 @@ use Game\Formulas;
             <?php
             $rtl = getDirection() == 'RTL';
             $units = isset($vars['units']) ? $vars['units'] : array_fill(1, 10, 0);
+            $race = isset($vars['race']) ? $vars['race'] : Session::getInstance()->getRace();
             for ($i = $rtl ? 5 : 1; $rtl ? $i >= 1 : $i <= 5; $rtl ? --$i : ++$i) {
-                $unitId = nrToUnitId($i, Session::getInstance()->getRace());
+                $unitId = nrToUnitId($i, $race);
                 echo '<div class="troopGroup"><label for="t' . $i . '"><img class="unit u' . $unitId . '" title="' . T("Troops",
                         "$unitId.title") . '" alt="' . T("Troops",
-                        "$unitId.title") . '" src="img/x.gif" /></label><input class="text troop" id="t' . $i . '" type="text" name="t' . $i . '" value="' . $units[$i] . '"' . ($i == Formulas::getSpyId(Session::getInstance()->getRace()) ? ' disabled="disabled"' : '') . ' /></div>';
+                        "$unitId.title") . '" src="img/x.gif" /></label><input class="text troop" id="t' . $i . '" type="text" name="t' . $i . '" value="' . $units[$i] . '"' . ($i == Formulas::getSpyId($race) ? ' disabled="disabled"' : '') . ' /></div>';
             }
             echo '<div class="clear"></div>';
             for ($i = $rtl ? 10 : 6; $rtl ? $i >= 6 : $i <= 10; $rtl ? --$i : ++$i) {
-                $unitId = nrToUnitId($i, Session::getInstance()->getRace());
-                echo '<div class="troopGroup"><label for="t' . $i . '"><img class="unit u' . $unitId . '" title="' . T("Troops", "$unitId.title") . '" alt="' . T("Troops","$unitId.title") . '" src="img/x.gif" /></label><input class="text troop" id="t' . $i . '" type="text" name="t' . $i . '" value="' . $units[$i] . '"' . ($i == Formulas::getSpyId(Session::getInstance()->getRace()) ? ' disabled="disabled"' : '') . ' /></div>';
+                $unitId = nrToUnitId($i, $race);
+                echo '<div class="troopGroup"><label for="t' . $i . '"><img class="unit u' . $unitId . '" title="' . T("Troops", "$unitId.title") . '" alt="' . T("Troops","$unitId.title") . '" src="img/x.gif" /></label><input class="text troop" id="t' . $i . '" type="text" name="t' . $i . '" value="' . $units[$i] . '"' . ($i == Formulas::getSpyId($race) ? ' disabled="disabled"' : '') . ' /></div>';
             }
             echo '<div class="clear"></div>';
             ?>

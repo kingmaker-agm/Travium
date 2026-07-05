@@ -614,8 +614,8 @@ class BuildCtrl extends GameCtrl
                 $contract['culturePointsAndPopulation']['infantryBonusTime'] = -$contract['culturePointsAndPopulation']['infantryBonusTime'];
             }
         } else if($item_id == 23){
-            $contract['culturePointsAndPopulation']['crannyCap'] = Formulas::crannyCAP($curLevel, $this->session->getRace());
-            $contract['nextLevelCpPop']['crannyCap'] = Formulas::crannyCAP($nextLevel, $this->session->getRace()) - $contract['culturePointsAndPopulation']['crannyCap'];
+            $contract['culturePointsAndPopulation']['crannyCap'] = Formulas::crannyCAP($curLevel, $village->getRace());
+            $contract['nextLevelCpPop']['crannyCap'] = Formulas::crannyCAP($nextLevel, $village->getRace()) - $contract['culturePointsAndPopulation']['crannyCap'];
         }
         switch ($item_id) {
             case 1:
@@ -647,7 +647,7 @@ class BuildCtrl extends GameCtrl
                 break;
             case 23:
                 $increase = ArtefactsModel::getArtifactEffectByType($this->session->getPlayerId(), $village->getKid(), ArtefactsModel::ARTIFACT_CRANNY);
-                $this->getValuesTable($contract, ["race" => $this->session->getRace(), "increase" => $increase,], function ($params, $lvl) {
+                $this->getValuesTable($contract, ["race" => $village->getRace(), "increase" => $increase,], function ($params, $lvl) {
                     return Formulas::crannyCAP($lvl, $params['race']) * $params['increase'];
                 });
                 break;
@@ -666,8 +666,8 @@ class BuildCtrl extends GameCtrl
             case 33:
             case 42:
             case 43:
-                $this->getValuesTable($contract, [], function ($params, $lvl) {
-                    return Formulas::wallPower($this->session->getRace(), $lvl);
+                $this->getValuesTable($contract, [], function ($params, $lvl) use ($village) {
+                    return Formulas::wallPower($village->getRace(), $lvl);
                 });
                 break;
             case 41:

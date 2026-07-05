@@ -65,9 +65,10 @@ class raidList extends AjaxBase
                     if ($list === FALSE) {
                         return;
                     }
+                    $listRace = (int)$m->getVillageUnits($list['kid'])['race'];
                     $units = [];
                     for ($i = 1; $i <= 10; ++$i) {
-                        $units[$i] = $i == Formulas::getSpyId(Session::getInstance()->getRace()) ? 0 : abs((int)$_POST['t' . $i]);
+                        $units[$i] = $i == Formulas::getSpyId($listRace) ? 0 : abs((int)$_POST['t' . $i]);
                     }
                     if (!array_sum($units)) {
                         $this->response['error'] = TRUE;
@@ -112,9 +113,10 @@ class raidList extends AjaxBase
                     return;
                 }
                 $slotId = $m->slotExistsByKid($kid, $listId);
+                $listRace = (int)$m->getVillageUnits($list['kid'])['race'];
                 $units = [];
                 for ($i = 1; $i <= 10; ++$i) {
-                    $units[$i] = $i == Formulas::getSpyId(Session::getInstance()->getRace()) ? 0 : abs((int)$_POST['t' . $i]);
+                    $units[$i] = $i == Formulas::getSpyId($listRace) ? 0 : abs((int)$_POST['t' . $i]);
                 }
                 if (!array_sum($units)) {
                     $this->response['error'] = TRUE;
@@ -218,6 +220,7 @@ class raidList extends AjaxBase
         }
         $view = new PHPBatchView("farmlist/actionEditAllSlotsForm");
         $view->vars['lid'] = $listId;
+        $view->vars['race'] = (int)$m->getVillageUnits($list['kid'])['race'];
         $this->response['data']['html'] = $view->output();
     }
 
@@ -281,6 +284,7 @@ class raidList extends AjaxBase
             ];
         }
         $view->vars['lid'] = $listId;
+        $view->vars['race'] = (int)$m->getVillageUnits($list['kid'])['race'];
         $this->response['data']['html'] = $view->output();
     }
 
@@ -370,7 +374,7 @@ class raidList extends AjaxBase
                     $modified_units[$i] = 0;
                 }
                 $modified_units[$i] += $v;
-                $speeds[] = Formulas::uSpeed(nrToUnitId($i, Session::getInstance()->getRace()));
+                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $units['race']));
             }
             if (array_sum($modified_units)) {
                 if (!$m->modifyUnits($list['kid'], $modified_units)) continue;
@@ -380,7 +384,7 @@ class raidList extends AjaxBase
             $speedCalculate->setMinSpeed($speeds);
             $move->addMovement($list['kid'],
                 $row['kid'],
-                Session::getInstance()->getRace(),
+                $units['race'],
                 $unitsToSend,
                 0,
                 0,

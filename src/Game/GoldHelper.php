@@ -935,7 +935,7 @@ class GoldHelper
         $village = Village::getInstance();
         $helper = new TrainingHelper();
         $max = $helper->getMaxUnitByNr2($nr, $great);
-        $cost = Formulas::uTrainingCost(nrToUnitId($nr, Session::getInstance()->getRace()), $great);
+        $cost = Formulas::uTrainingCost(nrToUnitId($nr, $village->getRace()), $great);
         $cur_res = $village->getCurrentResources();
         $disabled = array_sum($cur_res) < array_sum($cost);
         return getButton([
@@ -953,7 +953,7 @@ class GoldHelper
                         "data"              => [
                             'cmd'           => 'exchangeResources',
                             'defaultValues' => [
-                                'tid'    => Session::getInstance()->getRace(),
+                                'tid'    => $village->getRace(),
                                 'nr'     => $nr,
                                 "btyp"   => 1,
                                 'r1'     => $max * $cost[0],

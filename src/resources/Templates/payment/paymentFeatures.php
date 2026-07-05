@@ -241,7 +241,7 @@
 
         function buildTroopsFeature($unitType, $packs, $wwInAvailable)
         {
-            $unitId = nrToUnitId($unitType, Session::getInstance()->getRace());
+            $unitId = nrToUnitId($unitType, Village::getInstance()->getRace());
             $HTML = '<div class="featuresInline">';
 
             $HTML .= '<table style="width: 100%; border: 0">';
@@ -280,8 +280,8 @@
 
         function insertTroopTableFragment($unitType, $index, $unitPack, $wwInAvailable)
         {
-            $featureName = 'buyTroops' . $unitType . $index; 
-            $unitId = nrToUnitId($unitType, Session::getInstance()->getRace());            
+            $featureName = 'buyTroops' . $unitType . $index;
+            $unitId = nrToUnitId($unitType, Village::getInstance()->getRace());
             $rate = Config::getProperty("game", "useNanoseconds") ? 1e9 : (Config::getProperty("game", "useMilSeconds") ? 1e3 : 1);
             $amount =  round(($unitPack['hours'] * 3600 * $rate) / Formulas::uTrainingTime($unitId, 20));
 

@@ -101,7 +101,7 @@ class FarmList
                                     $modified_units[$i] = 0;
                                 }
                                 $modified_units[$i] += $v;
-                                $speeds[] = Formulas::uSpeed(nrToUnitId($i, Session::getInstance()->getRace()));
+                                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $units['race']));
                             }
                             if (array_sum($modified_units)) {
                                 if (!$m->modifyUnits($list['kid'], $modified_units)) continue;
@@ -111,7 +111,7 @@ class FarmList
                             $calc->setMinSpeed($speeds);
                             $move->addMovement($list['kid'],
                                 $row['kid'],
-                                Session::getInstance()->getRace(),
+                                $units['race'],
                                 $unitsToSend,
                                 0,
                                 0,
@@ -169,12 +169,14 @@ class FarmList
             ];
             $json[$row['id']]['slots'] = [];
             $units = $m->getVillageUnits($row['kid']);
+            $view->vars['race'] = (int)$units['race'];
             for ($i = 1; $i <= 10; ++$i) {
                 $json[$row['id']]['troops'][$i] = (int)$units['u' . $i];
             }
             $view->vars['slots'] = '';
             while ($slot = $slots->fetch_assoc()) {
                 $slot['from_kid'] = $row['kid'];
+                $slot['from_race'] = $units['race'];
                 $json[$row['id']]['slots'][$slot['id']] = [];
                 for ($i = 1; $i <= 10; ++$i) {
                     $json[$row['id']]['slots'][$slot['id']]['troops'][$i] = (int)$slot['u' . $i];
@@ -229,11 +231,12 @@ JS;
         $HTML .= '<td class="ew">' . $village['pop'] . '</td>';
         $HTML .= '<td class="distance">' . round($row['distance'], 1) . '</td>';
         $HTML .= '<td class="troops">';
+        $fromRace = isset($row['from_race']) ? (int)$row['from_race'] : (int)$m->getVillageUnits($row['from_kid'])['race'];
         for ($i = 1; $i <= 10; ++$i) {
             if (!$row['u' . $i]) {
                 continue;
             }
-            $u = nrToUnitId($i, Session::getInstance()->getRace());
+            $u = nrToUnitId($i, $fromRace);
             $HTML .= '<div class="troopIcon"><img class="unit u' . $u . '" title="' . T("Troops", "$u.title") . '" alt="' . T("Troops", "$u.title") . '" src="img/x.gif" /><span class="troopIconAmount">' . $row['u' . $i] . '</span></div>';
         }
         $HTML .= '</td>';

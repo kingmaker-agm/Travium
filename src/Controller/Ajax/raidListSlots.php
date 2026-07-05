@@ -80,9 +80,11 @@ class raidListSlots extends AjaxBase
         $view->vars['numRaids'] = 0;
         $view->vars['slots'] = '';
         $view->vars['auto'] = $list['auto'];
+        $view->vars['race'] = (int)$units['race'];
         $c = new FarmList();
         foreach ($slotsArray as $slot) {
             $slot['from_kid'] = $list['kid'];
+            $slot['from_race'] = $units['race'];
             for ($i = 1; $i <= 10; ++$i) {
                 $this->response['data']['list']['slots'][$slot['id']]['troops'][$i] = (int)$slot['u' . $i];
             }

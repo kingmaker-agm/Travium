@@ -70,7 +70,7 @@ class finishNowPopup extends AjaxBase
             while($row = $researching->fetch_assoc()) {
                 if($row['mode'] == 1) {
                     $x['academy'] = TRUE;
-                    $x['academys'][] = nrToUnitId($row['nr'], $session->getRace());
+                    $x['academys'][] = nrToUnitId($row['nr'], $village->getRace());
                 } else {
                     if (!isset($tmp[$row['nr']])){
                         $tmp[$row['nr']] = 0;
@@ -78,7 +78,7 @@ class finishNowPopup extends AjaxBase
                     ++$tmp[$row['nr']];
                     $smithy = $db->query("SELECT * FROM smithy WHERE kid={$village->getKid()}")->fetch_assoc();
                     $x['smithy'] = TRUE;
-                    $x['smithys'][] = ["unitId" => nrToUnitId($row['nr'], $session->getRace()), "lvl" => $tmp[$row['nr']] + $smithy['u' . $row['nr']],];
+                    $x['smithys'][] = ["unitId" => nrToUnitId($row['nr'], $village->getRace()), "lvl" => $tmp[$row['nr']] + $smithy['u' . $row['nr']],];
                 }
             }
         }

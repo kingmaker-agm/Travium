@@ -372,7 +372,7 @@ JSON;
                     $inventory['body']);
                 $view->vars['troops_info'] .= '<tr><td colspan="3">
 					<form id="simulateRaid" method="POST" action="/build.php?tt=3&amp;id=39">
-						<input type="hidden" name="a1_v" value="' . Session::getInstance()->getRace() . '">
+						<input type="hidden" name="a1_v" value="' . Village::getInstance()->getRace() . '">
 						<input type="hidden" name="a2_v4" value="4">
 						<input type="hidden" name="ew1" value="' . Session::getInstance()->get("total_pop") . '">
 						<input type="hidden" name="ew2" value="500">

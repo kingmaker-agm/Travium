@@ -616,10 +616,9 @@ class sendTroops extends RallyPointHTML
 
     public function getTroopsTable()
     {
-        $session = Session::getInstance();
         $m = new RallyPointModel();
         $villageUnits = $m->getUnits(Village::getInstance()->getKid());
-        $start = ($session->getRace() - 1) * 10 + 1;
+        $start = (Village::getInstance()->getRace() - 1) * 10 + 1;
         $units = $this->result['settings']['units'];
         $troopsTable = ' <tr>';
         //3first units.
@@ -764,11 +763,11 @@ class sendTroops extends RallyPointHTML
                 $units[$i] = $row['u' . $i];
             }
             if ($units[$i] && $i < 11) {
-                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $session->getRace()));
-                $units_id[] = nrToUnitId($i, $session->getRace());
+                $speeds[] = Formulas::uSpeed(nrToUnitId($i, $village->getRace()));
+                $units_id[] = nrToUnitId($i, $village->getRace());
             }
         }
-        $sportCount = $units[Formulas::getSpyId($session->getRace())];
+        $sportCount = $units[Formulas::getSpyId($village->getRace())];
         $nonSportCount = array_sum($units) - $sportCount;
         if ($attack_type != 2 && $sportCount > 0 && $nonSportCount <= 0) {
             //spy if not spy :D
@@ -916,7 +915,7 @@ class sendTroops extends RallyPointHTML
         $villageModel = new VillageModel();
         if (isset($_POST['ctar1']) || isset($_POST['ctar2'])) {
             $targets = [99];
-            if ($session->getRace() <> 2 || $villageModel->getCapBrewery($session->getPlayerId()) <= 0) {
+            if ($village->getRace() <> 2 || $villageModel->getCapBrewery($session->getPlayerId()) <= 0) {
                 if ($village->getField(39)['level'] < 3) {
                     $targets = [99, 10, 11];
                 } else if ($village->getField(39)['level'] <= 9) {
@@ -988,7 +987,7 @@ class sendTroops extends RallyPointHTML
         }
         $success = $move->addMovement($village->getKid(),
             $kid,
-            $session->getRace(),
+            $village->getRace(),
             $units,
             $insert['ctar1'],
             $insert['ctar2'],

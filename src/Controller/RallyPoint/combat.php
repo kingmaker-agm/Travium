@@ -34,7 +34,7 @@ class combat
         $this->output['attack_type'] = 3;
         $this->output['attacker'] = [
             "unitsHTML"             => '',
-            'race'                  => $session->getRace(),
+            'race'                  => Village::getInstance()->getRace(),
             'units'                 => array_fill(0, 10, ["number" => 0, "level" => 0,]),
             'pop'                   => 1,
             'catapult_target_level' => 0,
@@ -145,7 +145,7 @@ class combat
             }
         }
         if (!sizeof($this->output['defender']['races'])) {
-            $this->output['defender']['races'][$session->getRace()] = [
+            $this->output['defender']['races'][Village::getInstance()->getRace()] = [
                 "unitsHTML" => "",
                 "units"     => array_fill(0,
                     10,

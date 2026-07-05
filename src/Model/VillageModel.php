@@ -300,23 +300,11 @@ class VillageModel
         while ($trapped = $traps->fetch_assoc()) {
             $helper->returnTrappedOrEnforcementRow($trapped, FALSE);
         }
-        //removing tribe specific buildings.
+        // The village keeps its original tribe, so tribe specific buildings
+        // (walls, brewery, trapper, horse drinking pool) stay valid and are kept.
         $buildings = $this->getBuildingsAssoc($kid);
         if (sizeof($buildings) == 0) {
             logError("No building. while capture village");
-        }
-        $tribeSpecificArray = [31, 32, 33, 42, 43, 44, 45, 35, 36, 41];
-        if ($oldRace === (int) $newRace) {
-            for ($i = 19; $i <= 40; ++$i) {
-                if (!isset($buildings[$i])) {
-                    continue;
-                }
-                if (in_array($buildings[$i]['item_id'], $tribeSpecificArray)) {
-                    BuildingAction::downgrade($kid, $i, 0, true);
-                    $buildings[$i]['item_id'] = 0;
-                    $buildings[$i]['level'] = 0;
-                }
-            }
         }
         if ($newUidPop > $pop) {
             foreach ($buildings as $index => $build) {

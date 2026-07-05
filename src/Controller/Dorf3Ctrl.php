@@ -172,9 +172,10 @@ class Dorf3Ctrl extends GameCtrl
                 if (!sizeof($training)) {
                     $content .= '<span class="errorMessage">-</span>';
                 } else {
+                    $villageRace = (int)DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid={$row['kid']}") ?: $this->session->getRace();
                     foreach ($training as $item_id => $a) {
                         foreach ($a as $nr => $v) {
-                            $unitId = nrToUnitId($nr, $this->session->getRace());
+                            $unitId = nrToUnitId($nr, $villageRace);
                             if (getDisplay("seperateLargeAndSmallTrainingBuildingsSummaryInDorf3")) {
                                 $title = $this->number_format($v['num']) . 'x ' . T("Troops", "{$unitId}.title");
                             } else {
@@ -394,12 +395,13 @@ class Dorf3Ctrl extends GameCtrl
             $content .= $data['th_lvl'] > 0 ? '<a href="build.php?newdid=' . $row['kid'] . '&amp;gid=24">' . ($row['celebration'] >= time() ? appendTimer($row['celebration'] - time()) : '<span class="dot">●</span>') . '</a>' : '<span class="errorMessage">-</span>';
             $content .= '</td>';
             $content .= '<td class="tro">';
+            $villageRace = (int)DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid={$row['kid']}") ?: $this->session->getRace();
             for ($i = 1; $i <= $data['units']['settlers']; ++$i) {
-                $unitId = nrToUnitId(10, $this->session->getRace());
+                $unitId = nrToUnitId(10, $villageRace);
                 $content .= '<img class="unit u' . $unitId . '" src="img/x.gif" alt="' . T("Troops", "{$unitId}.title") . '" title="' . T("Troops", "{$unitId}.title") . '">';
             }
             for ($i = 1; $i <= $data['units']['chiefs']; ++$i) {
-                $unitId = nrToUnitId(9, $this->session->getRace());
+                $unitId = nrToUnitId(9, $villageRace);
                 $content .= '<img class="unit u' . $unitId . '" src="img/x.gif" alt="' . T("Troops", "{$unitId}.title") . '" title="' . T("Troops", "{$unitId}.title") . '">';
             }
             if (array_sum($data['units']) == 0) {
@@ -510,10 +512,11 @@ class Dorf3Ctrl extends GameCtrl
                     $effect = 1 / 2;
                 }
                 $effect *= ArtefactsModel::getArtifactEffectByType($this->session->getPlayerId(), $row['kid'], ArtefactsModel::ARTIFACT_DIET);
+                $unitsRow = $m->getUnits($row['kid']);
                 $content .= $this->renderVillageTroops(
                     $row['kid'],
-                    $this->session->getRace(),
-                    array_filter_units($m->getUnits($row['kid'])),
+                    isset($unitsRow['race']) && $unitsRow['race'] ? $unitsRow['race'] : $this->session->getRace(),
+                    array_filter_units($unitsRow),
                     $hdp,
                     $effect
                 );
@@ -537,6 +540,7 @@ class Dorf3Ctrl extends GameCtrl
                 $armory->vars['villages'][] = [
                     'kid'                 => $row['kid'],
                     'name'                => $row['name'],
+                    'race'                => (int)DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid={$row['kid']}") ?: $this->session->getRace(),
                     'research_level'      => $m->getArmory($row['kid']),
                     'research_inProgress' => $m->getArmoryProgress($row['kid']),
                 ];

@@ -677,13 +677,16 @@ class BattleModel
             $this->startProfile('assocDefender:getVillageTroops');
             $units = $this->model->getFullUnits($this->row['to_kid'], $this->model->getUnits($this->row['to_kid']));
             $this->endProfile('assocDefender:getVillageTroops');
+            // a captured village keeps its original tribe: its garrison, wall and
+            // trapper must be evaluated with the village race, not the owner race
+            $villageRace = (int)DB::getInstance()->fetchScalar("SELECT race FROM units WHERE kid={$this->row['to_kid']}");
             $wave = [
                 'uid' => $this->defender['uid'],
                 'kid' => $this->row['to_kid'],
                 'uniqueId' => $this->row['to_kid'],
                 'isEnforce' => false,
                 'isForeign' => false,
-                'race' => $user['race'],
+                'race' => $villageRace ?: $user['race'],
                 'units' => $units,
                 'hero' => [],
                 'heroItems' => [],

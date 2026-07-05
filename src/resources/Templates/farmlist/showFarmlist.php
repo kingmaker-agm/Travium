@@ -155,7 +155,7 @@ echo $vars['lid']; ?>" class="listEntry">
 				<div class="troopSelection">
 					<?php
 					for($i = 1; $i <= 10; ++$i) {
-						$unitId = nrToUnitId($i, Session::getInstance()->getRace());
+						$unitId = nrToUnitId($i, isset($vars['race']) ? $vars['race'] : Session::getInstance()->getRace());
 						echo '<span class="troopSelectionUnit">';
 						echo '<img class="unit u'.$unitId.'" title="'.T("Troops", "$unitId.title").'" alt="'.T("Troops", "$unitId.title").'" src="img/x.gif" />';
 						echo '<span class="troopSelectionValue">0</span>';

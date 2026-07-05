@@ -39,7 +39,7 @@
 
                     ++$tmp[$row['nr']];
 
-                    $unitId = nrToUnitId($row['nr'], Session::getInstance()->getRace());
+                    $unitId = nrToUnitId($row['nr'], isset($vill['race']) ? $vill['race'] : Session::getInstance()->getRace());
                     $title = T("Troops", "$unitId.title");
                     echo '<img class="unit u'.$unitId.'" src="img/x.gif" alt="'.$title.'" title="'.$title.' '.T("Buildings", "level").' '.(1+$vill['research_level']['u' . $row['nr']]+$tmp[$row['nr']]).'">';
                 }

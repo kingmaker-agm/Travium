@@ -446,7 +446,7 @@ class premiumFeature extends AjaxBase
     private function buyTroops($featureKey)
     {
         $config = Config::getInstance();
-        $race = Session::getInstance()->getRace();
+        $race = Village::getInstance()->getRace();
         $rate = Config::getProperty("game", "useNanoseconds") ? 1e9 : (Config::getProperty("game", "useMilSeconds") ? 1e3 : 1);
 
         $featureId = preg_replace('/[^0-9]/', '', $featureKey);

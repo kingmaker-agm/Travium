@@ -267,9 +267,9 @@ $helper = new Game\GoldHelper();
         $hdp = getHDP($row['kid']);//set hdp of kid
         for ($i = 1; $i <= 11; ++$i) {
             $inVillage += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, $row['race']), 0);
-            if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+            if (Formulas::checkHDPEffect(nrToUnitId($i, $row['race']), $hdp)) {
                 $totalHDP += $row['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                        Session::getInstance()->getRace()),
+                        $row['race']),
                         $hdp);
             }
         }
@@ -282,9 +282,9 @@ $helper = new Game\GoldHelper();
             $hdp = getHDP($row['kid']);//set hdp of kid
             for ($i = 1; $i <= 11; ++$i) {
                 $enforcement += $row['u' . $i] * Formulas::uUpkeep(nrToUnitId($i, $row['race']), 0);
-                if (Formulas::checkHDPEffect(nrToUnitId($i, Session::getInstance()->getRace()), $hdp)) {
+                if (Formulas::checkHDPEffect(nrToUnitId($i, $row['race']), $hdp)) {
                     $totalHDP += $row['u' . $i] * Formulas::getHDPAndNonHDPDiffCrop(nrToUnitId($i,
-                            Session::getInstance()->getRace()),
+                            $row['race']),
                             $hdp);
                 }
             }
@@ -345,7 +345,7 @@ $helper = new Game\GoldHelper();
                                         <td class="numberCell"><?= number_format_x($total - ($total * $wwEffect)); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if (Session::getInstance()->getRace() == 1): ?>
+                                <?php if (Village::getInstance()->getRace() == 1): ?>
                                     <tr class=" <?= $totalOwnHDP >= 1 ? '' : 'inactive'; ?>">
                                         <td class="troopLabel"><?= T("productionOverview", "HDP"); ?></td>
                                         <td class="numberCell"><?= number_format_x($totalHDP); ?></td>

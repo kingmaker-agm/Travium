@@ -91,8 +91,8 @@ class RallyPoint extends RallyPointHTML
                 }
                 $wholeCount += max($row['u' . $i], 0);
                 if ($i <= 10 && $units[$i]) {
-                    $speeds[] = Formulas::uSpeed(nrToUnitId($i, $session->getRace()));
-                    $units_id[] = nrToUnitId($i, $session->getRace());
+                    $speeds[] = Formulas::uSpeed(nrToUnitId($i, $row['race']));
+                    $units_id[] = nrToUnitId($i, $row['race']);
                 }
             }
             $calculator = new SpeedCalculator();
@@ -106,7 +106,7 @@ class RallyPoint extends RallyPointHTML
                 $inventory = $db->query("SELECT * FROM inventory WHERE uid={$uid}")->fetch_assoc();
                 $calculator->setLeftHand($inventory['leftHand']);
                 $calculator->setShoes($inventory['shoes']);
-                $speeds[] = $heroHelper->calcTotalSpeed($row['race'], $inventory['horse'], $inventory['shoes'], $calculator->isCavalryOnly($units_id));
+                $speeds[] = $heroHelper->calcTotalSpeed($session->getRace(), $inventory['horse'], $inventory['shoes'], $calculator->isCavalryOnly($units_id));
                 if (array_sum($units) > 1) $calculator->troopsWithHero();
             }
             $calculator->setMinSpeed($speeds);
@@ -127,7 +127,7 @@ class RallyPoint extends RallyPointHTML
                     $move = new MovementsModel();
                     if (($wholeCount - $total) <= 0) {
                         if ($m->enforcementExists($d) && $m->deleteEnforce($d)) {
-                            $move->addMovement($row['to_kid'], $row['kid'], $session->getRace(), $units, 0, 0, 0, 0, 1, MovementsModel::ATTACKTYPE_REINFORCEMENT, $miliseconds, $miliseconds + $timeTaken * 1000);
+                            $move->addMovement($row['to_kid'], $row['kid'], $row['race'], $units, 0, 0, 0, 0, 1, MovementsModel::ATTACKTYPE_REINFORCEMENT, $miliseconds, $miliseconds + $timeTaken * 1000);
                         }
                     } else {
                         $modify = [];
@@ -137,7 +137,7 @@ class RallyPoint extends RallyPointHTML
                             }
                         }
                         if ($m->enforcementExists($d) && $m->modifyEnforce($modify, $d)) {
-                            $move->addMovement($row['to_kid'], $row['kid'], $session->getRace(), $units, 0, 0, 0, 0, 1, MovementsModel::ATTACKTYPE_REINFORCEMENT, $miliseconds, $miliseconds + $timeTaken * 1000);
+                            $move->addMovement($row['to_kid'], $row['kid'], $row['race'], $units, 0, 0, 0, 0, 1, MovementsModel::ATTACKTYPE_REINFORCEMENT, $miliseconds, $miliseconds + $timeTaken * 1000);
                         }
                     }
                     if ($row['race'] <> 4) {
@@ -163,7 +163,7 @@ class RallyPoint extends RallyPointHTML
                     "playerName" => $session->getName(),
                     "villageName" => $village->getName(),
                 ],
-                "units" => $this->sortUnitsAssociated($units, $session->getRace()),
+                "units" => $this->sortUnitsAssociated($units, $row['race']),
             ];
             $settings = [
                 "noCoordinates" => TRUE,
@@ -224,8 +224,8 @@ class RallyPoint extends RallyPointHTML
                 }
                 $wholeCount += (int)max($row['u' . $i], 0);
                 if ($i <= 10 && $units[$i]) {
-                    $speeds[] = Formulas::uSpeed(nrToUnitId($i, $session->getRace()));
-                    $units_id[] = nrToUnitId($i, $session->getRace());
+                    $speeds[] = Formulas::uSpeed(nrToUnitId($i, $row['race']));
+                    $units_id[] = nrToUnitId($i, $row['race']);
                 }
             }
             $calculator = new SpeedCalculator();
@@ -239,7 +239,8 @@ class RallyPoint extends RallyPointHTML
                 $inventory = $db->query("SELECT * FROM inventory WHERE uid={$uid}")->fetch_assoc();
                 $calculator->setLeftHand($inventory['leftHand']);
                 $calculator->setShoes($inventory['shoes']);
-                $speeds[] = $heroHelper->calcTotalSpeed($row['race'],
+                $heroRace = (int)$db->fetchScalar("SELECT race FROM users WHERE id={$uid}");
+                $speeds[] = $heroHelper->calcTotalSpeed($heroRace ?: $row['race'],
                     $inventory['horse'],
                     $inventory['shoes'],
                     $calculator->isCavalryOnly($units_id));
@@ -419,13 +420,13 @@ class RallyPoint extends RallyPointHTML
                 $calc = new SpeedCalculator();
                 $calc->setFrom($village->getKid());
                 $calc->setTo($kid);
-                $calc->setMinSpeed(Formulas::uSpeed(nrToUnitId(10, Session::getInstance()->getRace())));
+                $calc->setMinSpeed(Formulas::uSpeed(nrToUnitId(10, $village->getRace())));
                 $time = $calc->calc();
                 $quest = Quest::getInstance();
                 $quest->setQuestBitwise('world', 16, 1);
                 $move->addMovement($village->getKid(),
                     $a2b['to_kid'],
-                    Session::getInstance()->getRace(),
+                    $village->getRace(),
                     $units,
                     0,
                     0,
@@ -505,13 +506,13 @@ class RallyPoint extends RallyPointHTML
                     "playerName" => Session::getInstance()->getName(),
                     "villageName" => Village::getInstance()->getName(),
                 ],
-                "units" => $this->sortUnits($units, Session::getInstance()->getRace()),
+                "units" => $this->sortUnits($units, Village::getInstance()->getRace()),
             ];
             $village = Village::getInstance();
             $calc = new SpeedCalculator();
             $calc->setFrom($village->getKid());
             $calc->setTo($kid);
-            $calc->setMinSpeed(Formulas::uSpeed(nrToUnitId(10, Session::getInstance()->getRace())));
+            $calc->setMinSpeed(Formulas::uSpeed(nrToUnitId(10, $village->getRace())));
             $time = $calc->calc();
             $xy = Formulas::kid2xy($kid);
             $settings = [
@@ -1159,7 +1160,7 @@ HTML;
             } else {
                 $row = $m->getUnits(Village::getInstance()->getKid());
                 for ($i = 1; $i <= 11; ++$i) {
-                    $id = nrToUnitId($i, $session->getRace());
+                    $id = nrToUnitId($i, $village->getRace());
                     $units[$id] = $row['u' . $i];
                 }
                 $data = [
@@ -1179,7 +1180,7 @@ HTML;
                         "info" => [
                             [
                                 "type" => "Consumption",
-                                "consumption" => $this->getTotalCropConsumption($session->getRace(), $units, $village->getHorseDrinkingPoolLvl(), $this->dietArtefactEffect),
+                                "consumption" => $this->getTotalCropConsumption($village->getRace(), $units, $village->getHorseDrinkingPoolLvl(), $this->dietArtefactEffect),
                             ],
                         ],
                         "showTroopsNum" => TRUE,
@@ -1244,7 +1245,7 @@ HTML;
                     $player = $db->query("SELECT name, race FROM users WHERE id={$trappedFromVillage['owner']}")->fetch_assoc();
                 }
                 $hdp = 0;
-                $units = $this->sortUnits($trap, $player['race']);
+                $units = $this->sortUnits($trap, $trap['race']);
                 if ($trap['to_kid'] == $village->getKid()) {
                     $hdp = $village->getHorseDrinkingPoolLvl();
                     $effect = $this->dietArtefactEffect;
@@ -1381,7 +1382,7 @@ HTML;
                     $troopHeadline = '<a href="karte.php?d=' . $trap['kid'] . '">' . sprintf(T("RallyPoint", "imprisendPlayer"),
                             $player['name']) . '</a>';
                 }
-                $units = $this->sortUnits($trap, $player['race']);
+                $units = $this->sortUnits($trap, $trap['race']);
                 $param = $filter == 4 ? 'kill' : 'free';
                 $data = [
                     "row" => [
