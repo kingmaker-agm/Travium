@@ -141,6 +141,10 @@ class ConfigurationDetailsCtrl
                 $label,
                 '<input type="text" id="' . $key . '" value="' . $value . '" style="width: 55px;" maxlength="6" />');
         }
+        $maxArts = property_exists($config->dynamic, 'maxActiveArtefacts') ? (int)$config->dynamic->maxActiveArtefacts : 3;
+        $this->addInfo($params['content'],
+            'Max active artefacts per account',
+            '<input type="text" id="maxActiveArtefacts" value="' . $maxArts . '" style="width: 55px;" maxlength="2" />');
         $dispatcher->appendContent(Template::getInstance()->load($params, 'tpl/ServerInfo.tpl')->getAsString());
         $dispatcher->appendContent('</div>');
         $dispatcher->appendContent('<div style="float: right; width: 49%">');
@@ -276,6 +280,17 @@ class ConfigurationDetailsCtrl
             $state = $_GET['fakeAccountProcess'] == 'on' ? 1 : 0;
             $config->dynamic->fakeAccountProcess = $state;
             $db->query("UPDATE config SET fakeAccountProcess=$state");
+        } else if (isset($_GET['maxActiveArtefacts'])) {
+            $value = max(1, min(99, (int)$_GET['maxActiveArtefacts']));
+            AdminLog::getInstance()->addLog("Changed maxActiveArtefacts to $value.");
+            $config->dynamic->maxActiveArtefacts = $value;
+            $db->query("UPDATE config SET maxActiveArtefacts=$value");
+            // apply the new cap immediately to all player accounts
+            $artModel = new \Model\ArtefactsModel();
+            $uids = $db->query("SELECT DISTINCT uid FROM artefacts WHERE uid > 1");
+            while ($row = $uids->fetch_assoc()) {
+                $artModel->fixArtifactOrderForPlayer($row['uid']);
+            }
         } else {
             foreach (['multiplierBuyResources', 'multiplierBuyAnimals', 'multiplierBuyTroops', 'multiplierNatureSpawn', 'multiplierTraderCapacity'] as $key) {
                 if (!isset($_GET[$key])) continue;

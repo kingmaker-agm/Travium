@@ -56,6 +56,16 @@ class ArtefactsModel
         return max(86400 / $rate, 1800);
     }
 
+    public static function getMaxActiveArtefacts()
+    {
+        $config = Config::getInstance();
+        if (!property_exists($config->dynamic, 'maxActiveArtefacts')) {
+            return 3;
+        }
+        $value = (int)$config->dynamic->maxActiveArtefacts;
+        return $value >= 1 ? $value : 3;
+    }
+
     public function activateArtifact(array $row)
     {
         $db = DB::getInstance();
@@ -154,10 +164,7 @@ class ArtefactsModel
             return -1;
         }
         if (!($atkUid == $defUid) && $atkUid <> 1) {
-            if ($size > 1 && $db->fetchScalar("SELECT COUNT(id) FROM artefacts WHERE size=$size AND uid=$atkUid") >= 1) {
-                return -2;
-            }
-            if ($db->fetchScalar("SELECT COUNT(id) FROM artefacts WHERE uid=$atkUid") >= 3) {
+            if ($db->fetchScalar("SELECT COUNT(id) FROM artefacts WHERE uid=$atkUid") >= self::getMaxActiveArtefacts()) {
                 return -2;
             }
         }
@@ -359,20 +366,10 @@ class ArtefactsModel
     public function fixArtifactOrderForPlayer($uid)
     {
         $db = DB::getInstance();
-        //disable all artifacts of two accounts
+        $max = self::getMaxActiveArtefacts();
+        //disable all artifacts of the account, then activate the most recently conquered ones up to the cap
         $db->query("UPDATE artefacts SET status=2 WHERE uid=$uid");
-
-        //activate the last small artifact
-        $db->query("UPDATE artefacts SET status=1 WHERE size=1 AND uid=$uid ORDER BY conquered DESC LIMIT 1");
-
-        //activate first big or unique artifact
-        $db->query("UPDATE artefacts SET status=1 WHERE uid=$uid AND size>1 ORDER BY conquered ASC LIMIT 1");
-
-        //activating other small artifacts
-        $left = 3 - (int)$db->fetchScalar("SELECT COUNT(id) FROM artefacts WHERE status=1 AND uid=$uid");
-        if ($left > 0) {
-            $db->query("UPDATE artefacts SET status=1 WHERE uid=$uid AND status=2 AND size=1 ORDER BY conquered ASC LIMIT $left");
-        }
+        $db->query("UPDATE artefacts SET status=1 WHERE uid=$uid ORDER BY conquered DESC LIMIT $max");
     }
 
     public function releaseArtifacts()
